@@ -1,6 +1,5 @@
 
 
-  <body>
   <!-- container section start -->
   <section id="container" class="">
      
@@ -31,7 +30,7 @@
                     <!-- task notificatoin start -->
                     <li id="task_notificatoin_bar" class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="icon-task-l"></i>
+                            <span class="icon-task-l"></span>
                             <span class="badge bg-important">0</span>
                         </a>
                         <ul class="dropdown-menu extended tasks-bar">
@@ -84,7 +83,7 @@
                       </a>
                   </li>
                   <li class="sub-menu">
-                      <a href="document" class="">
+                      <a href="/rss" class="">
                           <i class="icon_document_alt"></i>
                           <span>Ленты</span>
                           <span class="menu-arrow arrow_carrot-right"></span>
@@ -122,14 +121,16 @@
                   </li>
                              
                   <li class="sub-menu">
-                      <a href="login" class="">
+                      <a href="/logout" class="">
                           <i class="icon_table"></i>
                           <span>Выход</span>
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
+                      <!--
                       <ul class="sub">
                           <li><a class="" href="basic_table.html">Basic Table</a></li>
                       </ul>
+                      -->
                   </li>
                   
               </ul>
@@ -146,7 +147,7 @@
                 <div class="col-lg-12">
                     <h3 class="page-header"><i class="fa fa-laptop"></i> Главная страница</h3>
                     <ol class="breadcrumb">
-                        <li><i class="fa fa-home"></i><a href="index.html">Административная панель</a></li>
+                        <li><i class="fa fa-home"></i><a href="/user/profile">Административная панель</a></li>
                         <li><i class="fa fa-laptop"></i>Главная</li>                          
                     </ol>
                 </div>

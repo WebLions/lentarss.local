@@ -2,6 +2,13 @@
 
 class Home extends CI_Controller {
 
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->helper('url');
+	}
+
+
 	/**
 	 * Index Page for this controller.
 	 *
@@ -19,7 +26,8 @@ class Home extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('welcome_message');
+		redirect('/login','refresh');
+		//$this->load->view('welcome_message');
 	}
 }
 
