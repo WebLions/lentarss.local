@@ -31,7 +31,7 @@
                     <!-- task notificatoin start -->
                     <li id="task_notificatoin_bar" class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="icon-task-l"></i>
+                            <span class="icon-task-l"></span>
                             <span class="badge bg-important">0</span>
                         </a>
                         <ul class="dropdown-menu extended tasks-bar">

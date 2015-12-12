@@ -88,6 +88,10 @@ function initializeJS() {
 
 }
 
+
 jQuery(document).ready(function(){
+    jQuery('#btn_new_donor').click(function(){
+        jQuery('#donors').append('<input type="text" name="donors[]" class="form-control" placeholder="">');
+    })
     initializeJS();
 });

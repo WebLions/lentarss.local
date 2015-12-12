@@ -23,22 +23,24 @@
     <?php echo link_tag('bootstrap/js/morris.min.js').'<br>';?>
     <?php echo link_tag('bootstrap/js/sparklines.js').'<br>';?>
     <?php echo link_tag('bootstrap/js/charts.js').'<br>';?>
-    <?php echo link_tag('bootstrap/js/jquery.knob').'<br>';?>
+    <?php //echo link_tag('bootstrap/js/jquery.knob').'<br>';?>
     <?php echo link_tag('bootstrap/js/jquery.slimscroll.min.js').'<br>';?>
 
 
-  <script>
+  <script type="text/javascript">
 
       //knob
+      /*
       $(function() {
         $(".knob").knob({
           'draw' : function () { 
             $(this.i).val(this.cv + '%')
           }
         })
-      });
+      });*/
 
       //carousel
+      /*
       $(document).ready(function() {
           $("#owl-slider").owlCarousel({
               navigation : true,
@@ -47,15 +49,17 @@
               singleItem : true
 
           });
-      });
+
+      });*/
 
       //custom select box
-
+/*
       $(function(){
           $('select.styled').customSelect();
       });
-      
+      */
       /* ---------- Map ---------- */
+      /*
     $(function(){
       $('#map').vectorMap({
         map: 'world_mill_en',
@@ -71,7 +75,7 @@
           el.html(el.html()+' (GDP - '+gdpData[code]+')').'<br>';
         }
       });
-    });
+    });*/
 
 
 
