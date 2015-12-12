@@ -9,6 +9,7 @@ class Rss_model extends CI_Model
         $this->load->database();
     }
 
+
     public function get_rss_list()
     {
         $query = $this->db->get('rss');
