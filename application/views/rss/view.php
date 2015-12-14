@@ -1,5 +1,3 @@
-
-
 <!-- container section start -->
 <section id="container" class="">
 
@@ -77,7 +75,7 @@
             <!-- sidebar menu start-->
             <ul class="sidebar-menu">
                 <li class="">
-                    <a class="" href="user/profile">
+                    <a class="" href="/user/profile">
                         <i class="icon_house_alt"></i>
                         <span>Админ панель</span>
                     </a>
@@ -150,14 +148,9 @@
                     <h3 class="page-header"><i class="fa fa-laptop"></i> Главная страница</h3>
                     <ol class="breadcrumb">
                         <li><i class="fa fa-home"></i><a href="/user/profile">Административная панель</a></li>
-                        <li><i class="fa fa-laptop"></i>Ленты RSS</li>
+                        <li><i class="fa fa-laptop"></i><a href="/rss">Ленты RSS</a></li>
+                        <li><i class="fa"></i>Создание RSS</li>
                     </ol>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <a class="btn btn-success" href="rss/create" title="Добавить RSS">Добавить RSS +</a>
                 </div>
             </div>
 
@@ -165,37 +158,23 @@
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            Список лент
+                            <?php echo $rss[0]['title'];?>
                         </header>
-
-                        <table class="table table-striped table-advance table-hover">
-                            <tbody>
-                            <tr>
-                                <th><i class="icon_header"></i> Название</th>
-                                <th><i class="icon_calendar"></i> Краткое описание</th>
-                                <th><i class="icon_calendar"></i> Дата</th>
-                                <th><i class="icon_cogs"></i> Действие</th>
-
-                            </tr>
-                            <? foreach($rss as $row){ ?>
-                            <tr>
-                                <td><a href="/rss/view/<?=$row['id']?>"><?=$row['title']?></a></td>
-                                <td><?=$row['description']?></td>
-                                <td><?=$row['date']?></td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a class="btn btn-primary" href="#"><i class="icon_plus_alt2"></i></a>
-                                        <a class="btn btn-success" href="#"><i class="icon_check_alt2"></i></a>
-                                        <a class="btn btn-danger" href="#"><i class="icon_close_alt2"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <? } ?>
-                            </tbody>
-                        </table>
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <?php foreach($rss_item as $row){?>
+                                <a class="list-group-item " href="<?php echo $row['link']?>" target="_blank">
+                                    <h4 class="list-group-item-heading"><?php echo $row['title']?></h4>
+                                    <p class="list-group-item-text"><?php echo $row['description']?></p>
+                                </a>
+                                <?php } ?>
+                            </div>
+                        </div>
                     </section>
                 </div>
+
             </div>
+
 
         </section>
     </section>
