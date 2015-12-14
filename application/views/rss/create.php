@@ -175,9 +175,14 @@
                                         <div class="col-lg-8" id="donors">
                                             <label for="donor">Ленты доноры</label>
                                             <input type="text" name="donors[]" class="form-control" placeholder="">
+                                            <input type="text" name="donors[]" class="form-control" placeholder="">
                                         </div>
                                     </div>
                                     <div id="btn_new_donor" class="tagsinput-add"> Добавить донора</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="keywords">Ключевые слова</label>
+                                    <input type="text" name="keywords" class="form-control" id="keywords" placeholder="">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Создать</button>
                             </form>
