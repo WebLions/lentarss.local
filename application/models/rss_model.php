@@ -66,7 +66,7 @@ class Rss_model extends CI_Model
         $query = $this->db->get('rss');
         $data['rss'] = $query->result_array();
 
-        $this->db->select('rss_item.title, rss_item.description, rss_item.link');
+        $this->db->select('rss_item.title, rss_item.description, rss_item.link, rss_item.img');
         $this->db->from('rss_item');
         $this->db->join('rss_parser','rss_parser.id = rss_item.id_rss_parser');
         $this->db->where('rss_parser.id_rss', $id);
@@ -83,24 +83,27 @@ class Rss_model extends CI_Model
         $query = $this->db->query('SELECT `id`, `link` FROM `rss_parser` WHERE `period`=`update`');
         //echo $this->db->last_query();
         $result = $query->result();
-        echo "<pre>";
-        print_r($result);
+        //echo "<pre>";
+        //print_r($result);
         foreach($result as $row){
             $xml = simplexml_load_file( $row->link );
             $data = array();
-            echo $row->link;
-            print_r($xml);
+            //echo $row->link;
+           // print_r($xml);
             foreach($xml as $entry) {
                 foreach($entry->item as $item) {
-
-                    item_check($item, $row->id);
-                    $img = resize_img_rss($item);
-                    $date = DateTime::createFromFormat('r', $item->pubDate);
+                    //print_r($item);
+                    $this->item_check($item, $row->id);
+                    $img = $this->resize_img_rss($item);
+                    if(empty($img)){
+                        $img = '/images/default.jpg';
+                    }
+                    $date = DateTime::createFromFormat('D, d M Y H:i:s P', trim($item->pubDate) );
                     $date = $date->format('Y-m-d H:i:s');
                     $data[] = array(
                                     'id_rss_parser' => $row->id,
                                     'title' => (string) $item->title,
-                                    'description' => (string) $item->description,
+                                    'description' => (string) strip_tags($item->description, '<img>'),
                                     'link' => (string) $item->link,
                                     'guid' => (string) $item->guid,
                                     'img' => $img,
@@ -109,19 +112,34 @@ class Rss_model extends CI_Model
                 }
             }
             $this->db->insert_batch('rss_item',$data);
-            $this->db->where('id',$row->id);
-            $this->db->update('rss_parser', array('update'=>0));
-            print_r($data);
+            //$this->db->where('id',$row->id);
+            //$this->db->update('rss_parser', array('update'=>0));
+            //print_r($data);
+            echo "Gotovo!";
         }
         return true;
     }
     private function resize_img_rss($item = array())
     {
-        if(isset($item->enclosure))
-        $image = new Imagick('image.jpg');
-        $image->adaptiveResizeImage(1024,768);
+        //print_r($item->enclosure['url']);
+        if( strpos($item->enclosure['url'], '.jpg') ){
+            //echo trim($item->enclosure['url']);
+            $remote_image = file_get_contents( trim($item->enclosure['url']) );
+            file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/images/remote_image.jpg', $remote_image);
+            $image = new Imagick($_SERVER['DOCUMENT_ROOT'] . '/images/remote_image.jpg');
+            //$image->readImage("remote_image.jpg");
+            $image->adaptiveResizeImage(96,52);
+            preg_match("/.*\/(.*).jpg/", $item->enclosure['url'], $output_array);
+            $link = $_SERVER['DOCUMENT_ROOT'] . '/images/' . $output_array[1]. '.jpg';
+            $image->writeImage($link);
+            return '/images/' . $output_array[1]. '.jpg';
+        }else{
+            return false;
+        }
+
+
     }
-    private function item_check($item = array(), $rss)
+    private function item_check($item = array(), $rss = '')
     {
         $data = array();
         if( !isset($item->title) || empty($item->title) )
@@ -148,9 +166,10 @@ class Rss_model extends CI_Model
                 'date'=> date("Y-m-d H:i:s")
             );
         }
-
-        $this->db->insert_batch('error_log', $data);
-
+        if(!empty($data))
+        {
+            $this->db->insert_batch('error_log', $data);
+        }
         return true;
     }
 }
