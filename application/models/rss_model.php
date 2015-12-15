@@ -15,7 +15,7 @@ class Rss_model extends CI_Model
         $query = $this->db->get('rss');
         return $query->result_array();
     }
-    public function add_rss($title = '', $description = '', $keywords = '', $donors = array()){
+    public function add_rss($title = '', $description = '', $keywords = '', $donors = array(), $period = array()){
 
         //создаем новую ленту
         $data = array(
@@ -24,10 +24,10 @@ class Rss_model extends CI_Model
                         'date' => date("Y-m-d H:i:s")
                         );
         $query = $this->db->insert('rss', $data);
-
         $rss_id = $this->db->insert_id();
+
         //записываем ей ключевые слова в отдельную таблицу
-        $data = '';
+        $data = array();
         $keyword = explode(',',$keywords);
         $keywords = array_map('trim',$keyword);
         foreach ($keywords as $keyword) {
@@ -37,12 +37,14 @@ class Rss_model extends CI_Model
                             );
         }
         $this->db->insert_batch('keywords', $data);
+
         //записываем доноров ленты
-        $data = '';
-        foreach ($donors as $donor) {
+        $data = array();
+        foreach ($donors as $key => $donor) {
             $data[] = array(
                 'id_rss' => $rss_id,
-                'link' => $donor
+                'link' => $donor,
+                'period' => $period[$key]
             );
         }
         $this->db->insert_batch('rss_parser', $data);
@@ -90,11 +92,19 @@ class Rss_model extends CI_Model
             print_r($xml);
             foreach($xml as $entry) {
                 foreach($entry->item as $item) {
+
+                    item_check($item, $row->id);
+                    $img = resize_img_rss($item);
+                    $date = DateTime::createFromFormat('r', $item->pubDate);
+                    $date = $date->format('Y-m-d H:i:s');
                     $data[] = array(
                                     'id_rss_parser' => $row->id,
                                     'title' => (string) $item->title,
                                     'description' => (string) $item->description,
-                                    'link' => (string) $item->link
+                                    'link' => (string) $item->link,
+                                    'guid' => (string) $item->guid,
+                                    'img' => $img,
+                                    'date' => $date
                     );
                 }
             }
@@ -103,6 +113,42 @@ class Rss_model extends CI_Model
             $this->db->update('rss_parser', array('update'=>0));
             print_r($data);
         }
+        return true;
+    }
+    private function resize_img_rss()
+    {
+
+    }
+    private function item_check($item = array(), $rss)
+    {
+        $data = array();
+        if( !isset($item->title) || empty($item->title) )
+        {
+            $data[] = array(
+                            'text'=> "Не найден заголовок новости № ".$item->guid,
+                            'link'=> "/rss/view/",
+                            'date'=> date("Y-m-d H:i:s")
+                            );
+        }
+        if( !isset($item->description) || empty($item->description) )
+        {
+            $data[] = array(
+                'text'=> "Не найденно описание новости № ".$item->guid,
+                'link'=> "/rss/view/",
+                'date'=> date("Y-m-d H:i:s")
+            );
+        }
+        if( !isset($item->link) || empty($item->link) )
+        {
+            $data[] = array(
+                'text'=> "Не найдена ссылка на новость № ".$item->guid,
+                'link'=> "/rss/view/",
+                'date'=> date("Y-m-d H:i:s")
+            );
+        }
+
+        $this->db->insert_batch('error_log', $data);
+
         return true;
     }
 }
