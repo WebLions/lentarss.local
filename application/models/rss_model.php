@@ -115,9 +115,11 @@ class Rss_model extends CI_Model
         }
         return true;
     }
-    private function resize_img_rss()
+    private function resize_img_rss($item = array())
     {
-
+        if(isset($item->enclosure))
+        $image = new Imagick('image.jpg');
+        $image->adaptiveResizeImage(1024,768);
     }
     private function item_check($item = array(), $rss)
     {
