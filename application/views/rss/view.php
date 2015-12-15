@@ -164,6 +164,7 @@
                             <div class="list-group">
                                 <?php foreach($rss_item as $row){?>
                                 <a class="list-group-item " href="<?php echo $row['link']?>" target="_blank">
+                                    <img src="<?php echo $row['img']?>" height="52" width="96"/>
                                     <h4 class="list-group-item-heading"><?php echo $row['title']?></h4>
                                     <p class="list-group-item-text"><?php echo $row['description']?></p>
                                 </a>
