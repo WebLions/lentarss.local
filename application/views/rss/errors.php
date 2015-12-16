@@ -57,4 +57,19 @@
 
 
         </section>
+        <div class="row">
+            <div class="col-lg-12">
+                <div style = "text-align: center;">
+                    <ul class="pagination pagination-ms">
+                        <li><a href="#">«</a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">»</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </section>
