@@ -1,5 +1,3 @@
-
-
     <!--main content start-->
     <section id="main-content">
         <section class="wrapper">
@@ -10,7 +8,7 @@
                     <ol class="breadcrumb">
                         <li><i class="fa fa-home"></i><a href="/user/profile">Административная панель</a></li>
                         <li><i class="fa fa-laptop"></i><a href="/rss">Ленты RSS</a></li>
-                        <li><i class="fa"></i>Создание RSS</li>
+                        <li><i class="fa"></i>Редактирование RSS</li>
                     </ol>
                 </div>
             </div>
@@ -19,7 +17,7 @@
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            Добавление новой rss
+                            Редактирование RSS
                         </header>
                         <div class="panel-body">
                             <form role="form" id="create_rss" method="post">
@@ -56,13 +54,12 @@
                                         </div>
                                     </div>
                                     <div id="add_donor" class="tagsinput-add"> Добавить донора</div>
-
                                 </div>
                                 <div class="form-group">
                                     <label for="keywords">Ключевые слова</label>
                                     <input type="text" name="keywords" class="form-control" id="keywords" placeholder="">
                                 </div>
-                                <button type="submit" class="btn btn-primary">Создать</button>
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
                             </form>
 
 

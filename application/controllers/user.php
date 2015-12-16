@@ -26,7 +26,7 @@ class User extends CI_Controller {
                 redirect('login');
             }
         }else{
-            $this->load->view('user/header');
+            $this->load->view('user/login_header');
             $this->load->view('user/login');
             $this->load->view('user/footer');
         }
