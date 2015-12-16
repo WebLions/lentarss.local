@@ -106,7 +106,7 @@
           <li class="active">
             <a class="" href="profile">
               <i class="icon_house_alt"></i>
-              <span>Админ панель</span>
+              <span>Административная панель</span>
             </a>
           </li>
           <li class="sub-menu">
