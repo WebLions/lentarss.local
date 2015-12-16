@@ -1,146 +1,4 @@
 
-
-<!-- container section start -->
-<section id="container" class="">
-
-
-    <header class="header dark-bg">
-        <div class="toggle-nav">
-            <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom"><i class="icon_menu"></i></div>
-        </div>
-
-
-
-        <div class="nav search-row" id="top_menu">
-            <!--  search form start -->
-            <ul class="nav top-menu">
-                <li>
-                    <form class="navbar-form">
-                        <input class="form-control" placeholder="Search" type="text">
-                    </form>
-                </li>
-            </ul>
-            <!--  search form end -->
-        </div>
-
-        <div class="top-nav notification-row">
-            <!-- notificatoin dropdown start-->
-            <ul class="nav pull-right top-menu">
-
-                <!-- task notificatoin start -->
-                <li id="task_notificatoin_bar" class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <span class="icon-task-l"></span>
-                        <span class="badge bg-important">0</span>
-                    </a>
-                    <ul class="dropdown-menu extended tasks-bar">
-
-
-                    </ul>
-                </li>
-                <!-- task notificatoin end -->
-                <!-- inbox notificatoin start-->
-                <li id="mail_notificatoin_bar" class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <i class="icon-envelope-l"></i>
-                        <span class="badge bg-important">0</span>
-                    </a>
-                    <ul class="dropdown-menu extended inbox">
-
-                    </ul>
-                </li>
-                <!-- inbox notificatoin end -->
-                <!-- alert notification start-->
-                <li id="alert_notificatoin_bar" class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-
-                        <i class="icon-bell-l"></i>
-                        <span class="badge bg-important">7</span>
-                    </a>
-                    <ul class="dropdown-menu extended notification">
-
-                    </ul>
-                </li>
-                <!-- alert notification end-->
-                <!-- user login dropdown start-->
-
-                <!-- user login dropdown end -->
-            </ul>
-            <!-- notificatoin dropdown end-->
-        </div>
-    </header>
-    <!--header end-->
-
-    <!--sidebar start-->
-    <aside>
-        <div id="sidebar"  class="nav-collapse ">
-            <!-- sidebar menu start-->
-            <ul class="sidebar-menu">
-                <li class="">
-                    <a class="" href="user/profile">
-                        <i class="icon_house_alt"></i>
-                        <span>Админ панель</span>
-                    </a>
-                </li>
-                <li class="sub-menu active">
-                    <a href="/rss" class="">
-                        <i class="icon_document_alt"></i>
-                        <span>Ленты</span>
-                        <span class="menu-arrow arrow_carrot-right"></span>
-                    </a>
-                    <!--
-                    <ul class="sub">
-                        <li><a class="" href="form_component.html">Form Elements</a></li>
-                        <li><a class="" href="form_validation.html">Form Validation</a></li>
-                    </ul>
-                    -->
-                </li>
-                <li class="sub-menu">
-                    <a href="javascript:;" class="">
-                        <i class="icon_desktop"></i>
-                        <span>В разработке </span>
-                        <span class="menu-arrow arrow_carrot-right"></span>
-                    </a>
-                    <ul class="sub">
-                        <li><a class="" href="general.html">Elements</a></li>
-                        <li><a class="" href="buttons.html">Buttons</a></li>
-                        <li><a class="" href="grids.html">Grids</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="" href="widgets.html">
-                        <i class="icon_genius"></i>
-                        <span>В разработке</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="" href="chart-chartjs.html">
-                        <i class="icon_piechart"></i>
-                        <span>В разработке</span>
-
-                    </a>
-
-                </li>
-
-                <li class="sub-menu">
-                    <a href="/logout" class="">
-                        <i class="icon_table"></i>
-                        <span>Выход</span>
-                        <span class="menu-arrow arrow_carrot-right"></span>
-                    </a>
-                    <!--
-                    <ul class="sub">
-                        <li><a class="" href="basic_table.html">Basic Table</a></li>
-                    </ul>
-                    -->
-                </li>
-
-            </ul>
-            <!-- sidebar menu end-->
-        </div>
-    </aside>
-    <!--sidebar end-->
-
     <!--main content start-->
     <section id="main-content">
         <section class="wrapper">
@@ -157,16 +15,20 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <a class="btn btn-success" href="rss/create" title="Добавить RSS">Добавить RSS +</a>
+                    <table width = "100%">
+                        <tr>
+                             <td style = "width: 95%"><input type="text" name="search" class="form-control" id="search" placeholder="Поиск по лентам"></td>
+                             <td style = "width: 5%"><a class="btn btn-primary" href="" title="Найти ">Найти</a></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
+
+            <br>
 
             <div class="row">
                 <div class="col-lg-12">
                     <section class="panel">
-                        <header class="panel-heading">
-                            Список лент
-                        </header>
 
                         <table class="table table-striped table-advance table-hover">
                             <tbody>
@@ -184,7 +46,6 @@
                                 <td><?=$row['date']?></td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-primary" href="#"><i class="icon_plus_alt2"></i></a>
                                         <a class="btn btn-success" href="#"><i class="icon_check_alt2"></i></a>
                                         <a class="btn btn-danger" href="#"><i class="icon_close_alt2"></i></a>
                                     </div>
@@ -196,9 +57,31 @@
                     </section>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <a class="btn btn-success" href="rss/create" title="Добавить RSS">Добавить RSS +</a>
+                </div>
+            </div>
+
 
         </section>
+        <div class="row">
+            <div class="col-lg-12">
+                <div style = "text-align: center;">
+                <ul class="pagination pagination-ms">
+                    <li><a href="#">«</a></li>
+                    <li><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#">»</a></li>
+                </ul>
+                </div>
+            </div>
+        </div>
     </section>
+
     <!--main content end-->
 </section>
 <!-- container section start -->
