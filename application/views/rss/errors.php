@@ -22,14 +22,14 @@
                                         <div class="col-lg-12" >
                                             <table id="donors" width = "100%">
                                                 <tr>
-                                                    <th style = "width: 5%">№</th>
+                                                    <th style = "width: 5%;padding-left: 15px">№</th>
                                                     <th style = "width: 40%">Название</th>
                                                     <th style = "width: 40%">Ссылка</th>
                                                     <th style = "width: 15%">Дата</th>
                                                 </tr>
                                                 <?php $i=1; foreach($errors as $row){ ?>
                                                 <tr>
-                                                    <td><?=$i?></td>
+                                                    <td style = "padding-left: 15px"><?=$i?></td>
                                                     <td><?=$row['text']?></td>
                                                     <td><a href="<?=$row['link']?>"><?=$row['link']?></a></td>
                                                     <td><?=$row['date']?></td>
