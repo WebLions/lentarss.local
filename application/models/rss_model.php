@@ -225,7 +225,6 @@ class Rss_model extends CI_Model
 
         $img = '/images/'. $file;
 
-
         $this->resize_img_rss( NULL ,$img);
 
         $data = array(
