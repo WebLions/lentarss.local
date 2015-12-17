@@ -57,6 +57,7 @@ class User_model extends CI_Model{
     {
         return md5( $password . md5($login));
     }
+
     public function new_pass($login, $password)
     {
         $hash = hash_password_db($login, $password);
