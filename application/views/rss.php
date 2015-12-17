@@ -2,7 +2,7 @@
 <rss version="2.0">
     <channel>
         <title><?=$rss[0]['title']?></title>
-        <link>http://<?echo gethostname() . "/" . $rss[0]['link']?>.rss</link>
+        <link>http://<? echo $_SERVER['SERVER_NAME'] . "/" . $rss[0]['link']?>.rss</link>
         <description><?=$rss[0]['description']?></description>
         <?php foreach($rss_item as $item){ ?>
         <item>
@@ -10,7 +10,7 @@
             <link><?=$item['link']?></link>
             <description><?=$item['description']?></description>
             <pubDate><?=$item['date']?></pubDate>
-            <enclosure url="http://<?echo gethostname() .  $item['img']?>"/>
+            <enclosure url="http://<? echo $_SERVER['SERVER_NAME'] .  $item['img']?>"/>
         </item>
         <?php } ?>
     </channel>

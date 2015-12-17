@@ -94,10 +94,9 @@ class Rss_model extends CI_Model
 
     }
     public function update_period_rss(){
-        $data = array(
-                        'update' => "'update' + 1"
-                        );
-        $this->db->update('rss', $data);
+
+        $query = $this->db->query("UPDATE `rss` SET `update` = `update` + 1");
+        //echo $this->db->last_query();
         return true;
     }
     public function view($id)
@@ -132,16 +131,27 @@ class Rss_model extends CI_Model
     }
     public function parser(){
         //include('/simple/simple_html_dom.php');
-
+        $this->update_period_rss();
         $query = $this->db->query('SELECT `rss_parser`.`id` as `id`, `rss_parser`.`id_rss` as `id_rss`, `rss_parser`.`link` as `link`
 FROM `rss_parser` LEFT JOIN `rss` ON `rss`.`id`=`rss_parser`.`id_rss`
-WHERE `rss`.`update`=`rss`.`period`');
+WHERE `rss`.`update`>=`rss`.`period`');
         //echo $this->db->last_query();
         $result = $query->result();
         //echo "<pre>";
         //print_r($result);
         foreach($result as $row){
-            $xml = simplexml_load_file( $row->link );
+
+            $xml = @simplexml_load_file($row->link);
+            if (!$xml) {
+
+                $data = array(
+                    'text'=> "Не рабочая ссылка леты ".$row->link,
+                    'link'=> "/rss/edit/".$row->id_rss,
+                    'date'=> date("Y-m-d H:i:s")
+                );
+                $this->db->insert('error_log', $data);
+                continue;
+            }
 
             //echo $row->link;
             //print_r($xml);
@@ -181,6 +191,16 @@ WHERE `rss`.`update`=`rss`.`period`');
             $this->db->update('rss', array('update'=>0));
             //print_r($data);
             //echo "Gotovo!";
+            if($rep != $row->id_rss){
+                $rep = $row->id_rss;
+                $data = array(
+                    'text'=> "Обновлена лента №".$row->id_rss,
+                    'link'=> "/rss/edit/".$row->id_rss,
+                    'date'=> date("Y-m-d H:i:s")
+                );
+                $this->db->insert('error_log', $data);
+            }
+
         }
         return true;
     }

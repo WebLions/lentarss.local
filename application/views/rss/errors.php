@@ -27,14 +27,14 @@
                                                     <th style = "width: 60%">Ссылка</th>
                                                     <th style = "width: 15%">Дата</th>
                                                 </tr>
-                                                <?php foreach($errors as $row){ ?>
+                                                <?php $i=1; foreach($errors as $row){ ?>
                                                 <tr>
-                                                    <td><?=$row['id']?></td>
+                                                    <td><?=$i?></td>
                                                     <td><?=$row['text']?></td>
                                                     <td><a href="<?=$row['link']?>"><?=$row['link']?></a></td>
                                                     <td><?=$row['date']?></td>
                                                 </tr>
-                                                <?php } ?>
+                                                <?php $i++;} ?>
                                              </table>
                                         </div>
                                     </div>
