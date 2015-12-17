@@ -37,6 +37,10 @@
 | in the URL cannot be matched to a valid route.
 |
 */
+$route['([a-z]+).rss'] = "rss/generate/$1";
+$route['errors'] = "rss/errors";
+//$route['rss/(\d+)/(:any)'] = "rss/index/$1/$2";
+$route['special_rss'] = "rss/create_special_news";
 $route['login'] = "user/login";
 $route['logout'] = "user/logout";
 $route['default_controller'] = "home";

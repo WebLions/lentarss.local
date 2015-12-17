@@ -1,9 +1,3 @@
-/**
- * Created by PhpStorm.
- * User: Swarge
- * Date: 12/17/2015
- * Time: 12:18 AM
- */
 
 <!--main content start-->
     <section id="main-content">
@@ -26,7 +20,6 @@
                                 <div class="form-group">
                                     <div class="row">
                                         <div class="col-lg-8" >
-
                                             <table id="donors" width = "100%">
                                                 <tr>
                                                     <th style = "width: 5%">№</th>
@@ -34,27 +27,21 @@
                                                     <th style = "width: 60%">Ссылка</th>
                                                     <th style = "width: 15%">Дата</th>
                                                 </tr>
-
+                                                <?php foreach($errors as $row){ ?>
+                                                <tr>
+                                                    <td><?=$row['id']?></td>
+                                                    <td><?=$row['text']?></td>
+                                                    <td><a href="<?=$row['link']?>"><?=$row['link']?></a></td>
+                                                    <td><?=$row['date']?></td>
+                                                </tr>
+                                                <?php } ?>
                                              </table>
-
-
                                         </div>
                                     </div>
                                 </div>
                     </section>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <table width = "100%">
-                        <tr>
-                            <td style = "width: 95%"><input type="text" name="search" class="form-control" id="search" placeholder="Поиск по лентам"></td>
-                            <td style = "width: 5%"><a class="btn btn-primary" href="" title="Найти ">Найти</a></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
 
         </section>
         <div class="row">

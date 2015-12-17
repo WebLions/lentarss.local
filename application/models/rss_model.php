@@ -10,17 +10,49 @@ class Rss_model extends CI_Model
     }
 
 
-    public function get_rss_list()
+    public function get_rss_list( $page , $tag = '')
     {
-        $query = $this->db->get('rss');
+        $page = empty($page) ? 1 : $page;
+        if(!empty($tag)){
+            $this->db->join('keywords','keywords.id_rss=rss.id');
+            $this->db->where('keywords.word',$tag);
+        }
+        $query = $this->db->get('rss',10,($page-1)*10);
         return $query->result_array();
     }
-    public function add_rss($title = '', $description = '', $keywords = '', $donors = array(), $period = array()){
+
+    public function generate($url)
+    {
+        $this->db->select('id, title, link, description');
+        $this->db->from('rss');
+        $this->db->where('link', $url);
+        $query = $this->db->get();
+        $data['rss'] = $query->result_array();
+
+        $this->db->select('id, title, description, link, img, date');
+        $this->db->from('rss_item');
+        $this->db->where('id_rss', $data['rss'][0]['id']);
+        $this->db->order_by('date', 'desc');
+        $query = $this->db->get();
+        $data['rss_item'] = $query->result_array();
+
+        foreach($data['rss_item'] as $k => $v)
+        {
+            $data['rss_item'][$k]['date'] = date("r", strtotime($v['date']));
+        }
+
+        return $data;
+
+    }
+
+    public function add_rss($title = '',$link = '', $description = '', $period = '', $keywords = '', $donors = array()){
 
         //создаем новую ленту
         $data = array(
                         'title' => $title,
+                        'link' => $link,
                         'description' => $description,
+                        'period' => $period,
                         'date' => date("Y-m-d H:i:s")
                         );
         $query = $this->db->insert('rss', $data);
@@ -43,8 +75,7 @@ class Rss_model extends CI_Model
         foreach ($donors as $key => $donor) {
             $data[] = array(
                 'id_rss' => $rss_id,
-                'link' => $donor,
-                'period' => $period[$key]
+                'link' => $donor
             );
         }
         $this->db->insert_batch('rss_parser', $data);
@@ -56,7 +87,7 @@ class Rss_model extends CI_Model
         $data = array(
                         'update' => "'update' + 1"
                         );
-        $this->db->update('rss_parser', $data);
+        $this->db->update('rss', $data);
         return true;
     }
     public function view($id)
@@ -119,10 +150,20 @@ class Rss_model extends CI_Model
         }
         return true;
     }
-    private function resize_img_rss($item = array())
+    private function resize_img_rss($item = array(), $img)
     {
         //print_r($item->enclosure['url']);
-        if( strpos($item->enclosure['url'], '.jpg') ){
+        if(!empty($img))
+        {
+
+            $image = new Imagick($_SERVER['DOCUMENT_ROOT'] . $img);
+            //$image->readImage("remote_image.jpg");
+            $image->adaptiveResizeImage(96,52);
+            $link = $_SERVER['DOCUMENT_ROOT'] . $img;
+            $image->writeImage($link);
+            return true;
+
+        }elseif( strpos($item->enclosure['url'], '.jpg') ){
             //echo trim($item->enclosure['url']);
             $remote_image = file_get_contents( trim($item->enclosure['url']) );
             file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/images/remote_image.jpg', $remote_image);
@@ -171,5 +212,44 @@ class Rss_model extends CI_Model
             $this->db->insert_batch('error_log', $data);
         }
         return true;
+    }
+
+    public function add_news($id_rss, $title, $link, $description, $period)
+    {
+       // print_r($_FILES);
+        //загружаем картинку
+        $uploaddir = $_SERVER['DOCUMENT_ROOT'] . '/images/';
+        $file =  date("H-i-s") . basename($_FILES['picture']['name']);
+        $uploadfile = $uploaddir . $file;
+        move_uploaded_file($_FILES['picture']['tmp_name'], $uploadfile);
+
+        $img = '/images/'. $file;
+
+        $this->resize_img_rss( NULL ,$img);
+
+        $data = array(
+                        'id_rss' => $id_rss,
+                        'title' => $title,
+                        'link' => $link,
+                        'description' => $description,
+                        'img' => $img,
+                        'period' => $period,
+                        'date' => date("Y-m-d H:i:s")
+                    );
+        $this->db->insert('rss_item', $data);
+        return true;
+    }
+    public function get_list_rss()
+    {
+        $query = $this->db->get('rss');
+        $data = $query->result_array();
+        return $data;
+    }
+    public function errors()
+    {
+        $this->db->order_by('date','desc');
+        $query = $this->db->get('error_log');
+        $data['errors'] = $query->result_array();
+        return $data;
     }
 }
