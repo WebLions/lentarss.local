@@ -70,14 +70,6 @@
               <span>Спец. новости</span>
             </a>
           </li>
-          <li>
-            <a class="" href="chart-chartjs.html">
-              <i class="icon_piechart"></i>
-              <span>В разработке</span>
-
-            </a>
-
-          </li>
 
           <li class="sub-menu">
             <a href="/logout" class="">
