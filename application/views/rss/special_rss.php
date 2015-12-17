@@ -36,7 +36,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="description">Ссылка</label>
+                                <label for="link">Ссылка</label>
                                 <input type="text" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
                             </div>
 

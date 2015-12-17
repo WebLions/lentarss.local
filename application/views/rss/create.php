@@ -28,7 +28,7 @@
                                     <input type="text" name="title" class="form-control" id="title" placeholder="Имя ленты">
                                 </div>
                                 <div class="form-group">
-                                    <label for="description">Ссылка</label>
+                                    <label for="link">Ссылка</label>
                                     <input type="text" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
                                 </div>
                                 <div class="form-group">
@@ -36,7 +36,7 @@
                                     <input type="text" name="description" class="form-control" id="description" placeholder="Описание">
                                 </div>
                                 <div class="form-group">
-                                    <label for="description">Период обновления ленты</label>
+                                    <label for="period">Период обновления ленты</label>
                                     <input type="text" name="period" class="form-control" id="period" placeholder="Минуты">
                                 </div>
                                 <div class="form-group">
