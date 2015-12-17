@@ -50,6 +50,12 @@
               <span>Админ. панель</span>
             </a>
           </li>
+          <li class="active">
+            <a class="" href="/user/new_pass">
+              <i class="icon_house_alt"></i>
+              <span>Настройки</span>
+            </a>
+          </li>
           <li class="sub-menu">
             <a href="/rss" class="">
               <i class="icon_document_alt"></i>

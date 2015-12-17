@@ -60,7 +60,7 @@ class User_model extends CI_Model{
 
     public function new_pass($login, $password)
     {
-        $hash = hash_password_db($login, $password);
+        $hash = $this->hash_password_db($login, $password);
         $data = array(
             'login' => $login,
             'hash_password' => $hash
