@@ -5,7 +5,7 @@
             <!--overview start-->
             <div class="row">
                 <div class="col-lg-12">
-                    <h3 class="page-header"><i class="fa fa-laptop"></i> Главная страница</h3>
+
                     <ol class="breadcrumb">
                         <li><i class="fa fa-home"></i><a href="/user/profile">Административная панель</a></li>
                         <li><i class="fa fa-laptop"></i>Ленты RSS</li>
@@ -17,8 +17,8 @@
                 <div class="col-lg-12">
                     <table width = "100%">
                         <tr>
-                             <td><a class="btn btn-success" href="rss/create" title="Добавить RSS">Добавить RSS +</a></td>
-                             <td style = "width: 95%"><input type="text" name="tag" class="form-control" id="search" placeholder="Поиск по лентам"></td>
+                             <td style = "width: 15%"><a class="btn btn-success" href="rss/create" title="Добавить RSS">Добавить RSS</a></td>
+                             <td style = "width: 80%"><input type="text" name="tag" class="form-control" id="search" placeholder="Поиск по лентам"></td>
                              <td style = "width: 5%"><button class="btn btn-primary" href="" title="Найти ">Найти</button></td>
                         </tr>
                     </table>
@@ -47,8 +47,8 @@
                                 <td><?=$row['date']?></td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-success" href="#"><i class="icon_check_alt2"></i></a>
-                                        <a class="btn btn-danger" href="#"><i class="icon_close_alt2"></i></a>
+                                        <a class="btn btn-success" href="/rss/edit/<?=$row['id']?>"><i class="icon_cog"></i></a>
+                                        <a class="btn btn-danger" href="/rss/delete/<?=$row['id']?>"><i class="icon_trash_alt"></i></a>
                                     </div>
                                 </td>
                             </tr>
