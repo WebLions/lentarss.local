@@ -19,12 +19,12 @@
                     <section class="panel">
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-lg-8" >
+                                        <div class="col-lg-12" >
                                             <table id="donors" width = "100%">
                                                 <tr>
                                                     <th style = "width: 5%">№</th>
-                                                    <th style = "width: 20%">Название</th>
-                                                    <th style = "width: 60%">Ссылка</th>
+                                                    <th style = "width: 40%">Название</th>
+                                                    <th style = "width: 40%">Ссылка</th>
                                                     <th style = "width: 15%">Дата</th>
                                                 </tr>
                                                 <?php $i=1; foreach($errors as $row){ ?>
