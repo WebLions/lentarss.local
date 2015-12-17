@@ -87,6 +87,7 @@ class Rss extends CI_Controller
             redirect('404','refresh');
         }
     }
+
     public function create_special_news()
     {
         $this->form_validation->set_rules('title','Название','trim|required|xss_clean');
@@ -94,6 +95,8 @@ class Rss extends CI_Controller
         $this->form_validation->set_rules('description','Описание','trim|required|xss_clean');
         $this->form_validation->set_rules('period','Период','trim|required|xss_clean');
         $this->form_validation->set_rules('id_rss','Период','trim|required|xss_clean');
+        $this->form_validation->set_rules('picture','Картинка','trim|required|xss_clean');
+
 
         if( $this->form_validation->run() == TRUE )
         {

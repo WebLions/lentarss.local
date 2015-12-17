@@ -49,5 +49,19 @@ class User extends CI_Controller {
         }
 
     }
+    public function new_pass()
+    {
+        $this->form_validation->set_rules('login', 'Логин', 'trim|required|xss_clean');
+        $this->form_validation->set_rules('password', 'Пароль', 'trim|required|xss_clean');
+        if( $this->form_validation->run() == TRUE )
+        {
+            $this->user_model->new_pass($this->input->post('login'), $this->input->post('password'));
+            redirect('/login','refresh');
+        }else {
+            $this->load->view('user/header.php');
+            $this->load->view('user/new_pass.php');
+            $this->load->view('user/footer.php');
+        }
+    }
 
 }
