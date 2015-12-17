@@ -96,6 +96,7 @@ class Rss_model extends CI_Model
     public function update_period_rss(){
 
         $query = $this->db->query("UPDATE `rss` SET `update` = `update` + 1");
+        $this->db->query("UPDATE `rss_item` SET `period` = `period` - 1 WHERE `period` > 0 ");
         //echo $this->db->last_query();
         return true;
     }
