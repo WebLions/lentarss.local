@@ -37,7 +37,7 @@
 | in the URL cannot be matched to a valid route.
 |
 */
-$route['([a-z]+).rss'] = "rss/generate/$1";
+$route['(:any).rss'] = "rss/generate/$1";
 $route['errors'] = "rss/errors";
 //$route['rss/(\d+)/(:any)'] = "rss/index/$1/$2";
 $route['profile'] = "user/profile";
