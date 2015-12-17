@@ -15,6 +15,7 @@
 
             <div class="row">
                 <div class="col-lg-12">
+                    <form action="?" method="get">
                     <table width = "100%">
                         <tr>
                              <td style = "width: 15%"><a class="btn btn-success" href="rss/create" title="Добавить RSS">Добавить RSS</a></td>
@@ -22,6 +23,7 @@
                              <td style = "width: 5%"><button class="btn btn-primary" href="" title="Найти ">Найти</button></td>
                         </tr>
                     </table>
+                        </form>
                 </div>
             </div>
 
