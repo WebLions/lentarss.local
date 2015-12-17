@@ -130,6 +130,7 @@ class Rss_model extends CI_Model
 
     }
     public function parser(){
+        $rep = '';
         //include('/simple/simple_html_dom.php');
         $this->update_period_rss();
         $query = $this->db->query('SELECT `rss_parser`.`id` as `id`, `rss_parser`.`id_rss` as `id_rss`, `rss_parser`.`link` as `link`

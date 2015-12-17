@@ -36,6 +36,7 @@
                             <tr>
                                 <th><i class="icon_header"></i> Название</th>
                                 <th><i class="icon_calendar"></i> Краткое описание</th>
+                                <th><i class="icon_calendar"></i> Rss</th>
                                 <th><i class="icon_calendar"></i> Дата</th>
                                 <th><i class="icon_cogs"></i> Действие</th>
 
@@ -44,6 +45,7 @@
                             <tr>
                                 <td><a href="/rss/view/<?=$row['id']?>"><?=$row['title']?></a></td>
                                 <td><?=$row['description']?></td>
+                                <td><a href="/<?=$row['link']?>.rss" target="_blank"><?=$row['link']?></a></td>
                                 <td><?=$row['date']?></td>
                                 <td>
                                     <div class="btn-group">
