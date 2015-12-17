@@ -87,6 +87,7 @@ class Rss extends CI_Controller
             redirect('404','refresh');
         }
     }
+
     public function create_special_news()
     {
         $this->form_validation->set_rules('title','Название','trim|required|xss_clean');

@@ -280,7 +280,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
        // print_r($_FILES);
         //загружаем картинку
         $uploaddir = $_SERVER['DOCUMENT_ROOT'] . '/images/';
-        $file =  date("H-i-s") . basename($_FILES['picture']['name']);
+        $file =  uniqid()  . basename($_FILES['picture']['name']);
         $uploadfile = $uploaddir . $file;
         move_uploaded_file($_FILES['picture']['tmp_name'], $uploadfile);
 
