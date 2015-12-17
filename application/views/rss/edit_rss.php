@@ -23,19 +23,19 @@
                             <form role="form" id="create_rss" method="post">
                                 <div class="form-group">
                                     <label for="title">Название ленты</label>
-                                    <input type="text" name="title" class="form-control" id="title" placeholder="Имя ленты">
+                                    <input type="text" value="<?php echo $rss[0]['title']?>" name="title" class="form-control" id="title" placeholder="Имя ленты">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Ссылка</label>
-                                    <input type="text" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
+                                    <input type="text" value="<?php echo $rss[0]['link']?>" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Краткое описание</label>
-                                    <input type="text" name="description" class="form-control" id="description" placeholder="Описание">
+                                    <input type="text" value="<?php echo $rss[0]['description']?>" name="description" class="form-control" id="description" placeholder="Описание">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Период обновления ленты</label>
-                                    <input type="text" name="period" class="form-control" id="period" placeholder="Минуты">
+                                    <input type="text" value="<?php echo $rss[0]['period']?>" name="period" class="form-control" id="period" placeholder="Минуты">
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
@@ -45,9 +45,16 @@
                                                 <tr>
                                                     <th style = "width: 80%">Ленты доноры</th>
                                                     <th style = "width: 20%;text-align:right"></th>
+                                                <?php foreach($rss_parser as $row){?>
+                                                <tr>
+                                                    <td>
+                                                        <input type="text" value="<?php echo $row['link']?>" name="donors[]" class="form-control" placeholder="">
+                                                    </td>
+                                                    <td>
+                                                        <button class="delete icon_close_alt2 btn btn-danger"></button>
+                                                    </td>
                                                 </tr>
-
-
+                                                <?php } ?>
                                              </table>
 
 
@@ -57,7 +64,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="keywords">Ключевые слова</label>
-                                    <input type="text" name="keywords" class="form-control" id="keywords" placeholder="">
+                                    <input type="text" value="<?php echo $keywords?>" name="keywords" class="form-control" id="keywords" placeholder="">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Сохранить</button>
                             </form>

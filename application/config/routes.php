@@ -40,6 +40,7 @@
 $route['([a-z]+).rss'] = "rss/generate/$1";
 $route['errors'] = "rss/errors";
 //$route['rss/(\d+)/(:any)'] = "rss/index/$1/$2";
+$route['profile'] = "user/profile";
 $route['special_rss'] = "rss/create_special_news";
 $route['login'] = "user/login";
 $route['logout'] = "user/logout";

@@ -72,6 +72,7 @@ class Rss extends CI_Controller
     }
 
     public function parser(){
+
         $this->rss_model->parser();
     }
 
@@ -113,5 +114,45 @@ class Rss extends CI_Controller
             $this->load->view('user/footer.php');
         }
     }
+    public function edit($id)
+    {
+        if($this->data['user_token']){
 
+            $this->form_validation->set_rules('title','Название','trim|required|xss_clean');
+            $this->form_validation->set_rules('link','Ссылка','trim|required|xss_clean');
+            $this->form_validation->set_rules('description','Описание','trim|required|xss_clean');
+            $this->form_validation->set_rules('period','Описание','trim|required|xss_clean');
+            $this->form_validation->set_rules('keywords','Ключеве слова','trim|required|xss_clean');
+
+            if( $this->form_validation->run() == TRUE )
+            {
+                $result = $this->rss_model->edit_rss($id,$this->input->post('title'),
+                    $this->input->post('link'),
+                    $this->input->post('description'),
+                    $this->input->post('period'),
+                    $this->input->post('keywords'),
+                    $this->input->post('donors'));
+                if($result){
+                    redirect('/rss','refresh');
+                }else{
+                    redirect('/rss/edit/'.$id ,'refresh');
+                }
+            }else {
+                $this->data = $this->rss_model->data_to_edit($id);
+                $this->load->view('user/header.php');
+                $this->load->view('rss/edit_rss.php', $this->data);
+                $this->load->view('user/footer.php');
+            }
+        }
+
+    }
+    public function delete($id)
+    {
+        if($this->data['user_token'])
+        {
+            $this->rss_model->delete_rss($id);
+            redirect('/rss','refresh');
+        }
+
+    }
 }
