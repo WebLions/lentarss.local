@@ -37,7 +37,7 @@
 
                             <div class="form-group">
                                 <label for="description">Ссылка</label>
-                                <input type="text" name="description" class="form-control" id="description" placeholder="Ссылка на ленту">
+                                <input type="text" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
                             </div>
 
                             <div class="form-group">

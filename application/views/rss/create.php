@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Ссылка</label>
-                                    <input type="text" name="description" class="form-control" id="description" placeholder="Ссылка на ленту">
+                                    <input type="text" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Краткое описание</label>
@@ -37,7 +37,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Период обновления ленты</label>
-                                    <input type="text" name="description" class="form-control" id="description" placeholder="Минуты">
+                                    <input type="text" name="period" class="form-control" id="period" placeholder="Минуты">
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
