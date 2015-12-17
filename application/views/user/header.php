@@ -36,65 +36,6 @@
         <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom"><i class="icon_menu"></i></div>
       </div>
 
-
-
-      <div class="nav search-row" id="top_menu">
-        <!--  search form start -->
-        <ul class="nav top-menu">
-          <li>
-            <form class="navbar-form">
-              <input class="form-control" placeholder="Search" type="text">
-            </form>
-          </li>
-        </ul>
-        <!--  search form end -->
-      </div>
-
-      <div class="top-nav notification-row">
-        <!-- notificatoin dropdown start-->
-        <ul class="nav pull-right top-menu">
-
-          <!-- task notificatoin start -->
-          <li id="task_notificatoin_bar" class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-              <span class="icon-task-l"></span>
-              <span class="badge bg-important">0</span>
-            </a>
-            <ul class="dropdown-menu extended tasks-bar">
-
-
-            </ul>
-          </li>
-          <!-- task notificatoin end -->
-          <!-- inbox notificatoin start-->
-          <li id="mail_notificatoin_bar" class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-              <i class="icon-envelope-l"></i>
-              <span class="badge bg-important">0</span>
-            </a>
-            <ul class="dropdown-menu extended inbox">
-
-            </ul>
-          </li>
-          <!-- inbox notificatoin end -->
-          <!-- alert notification start-->
-          <li id="alert_notificatoin_bar" class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-
-              <i class="icon-bell-l"></i>
-              <span class="badge bg-important">7</span>
-            </a>
-            <ul class="dropdown-menu extended notification">
-
-            </ul>
-          </li>
-          <!-- alert notification end-->
-          <!-- user login dropdown start-->
-
-          <!-- user login dropdown end -->
-        </ul>
-        <!-- notificatoin dropdown end-->
-      </div>
     </header>
     <!--header end-->
 
@@ -106,7 +47,7 @@
           <li class="active">
             <a class="" href="profile">
               <i class="icon_house_alt"></i>
-              <span>Административная панель</span>
+              <span>Админ. панель</span>
             </a>
           </li>
           <li class="sub-menu">
@@ -119,14 +60,14 @@
           <li class="sub-menu">
             <a href="/errors" class="">
               <i class="icon_desktop"></i>
-              <span>Отчёт об ошибках RSS </span>
+              <span>Ошибки RSS </span>
             </a>
 
           </li>
           <li>
             <a class="" href="/special_rss">
               <i class="icon_genius"></i>
-              <span>Специальные новости</span>
+              <span>Спец. новости</span>
             </a>
           </li>
           <li>

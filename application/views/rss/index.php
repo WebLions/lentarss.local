@@ -15,14 +15,13 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="?" method="get">
                     <table width = "100%">
                         <tr>
+                             <td><a class="btn btn-success" href="rss/create" title="Добавить RSS">Добавить RSS +</a></td>
                              <td style = "width: 95%"><input type="text" name="tag" class="form-control" id="search" placeholder="Поиск по лентам"></td>
                              <td style = "width: 5%"><button class="btn btn-primary" href="" title="Найти ">Найти</button></td>
                         </tr>
                     </table>
-                    </form>
                 </div>
             </div>
 
@@ -37,7 +36,6 @@
                             <tr>
                                 <th><i class="icon_header"></i> Название</th>
                                 <th><i class="icon_calendar"></i> Краткое описание</th>
-                                <th><i class="icon_calendar"></i> Rss</th>
                                 <th><i class="icon_calendar"></i> Дата</th>
                                 <th><i class="icon_cogs"></i> Действие</th>
 
@@ -46,12 +44,11 @@
                             <tr>
                                 <td><a href="/rss/view/<?=$row['id']?>"><?=$row['title']?></a></td>
                                 <td><?=$row['description']?></td>
-                                <td><a href="/<?=$row['link']?>.rss" target="_blank"><?=$row['link']?></a></td>
                                 <td><?=$row['date']?></td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-success" href="/rss/edit/<?=$row['id']?>"><i class="icon_check_alt2"></i></a>
-                                        <a class="btn btn-danger" href="/rss/delete/<?=$row['id']?>"><i class="icon_close_alt2"></i></a>
+                                        <a class="btn btn-success" href="#"><i class="icon_check_alt2"></i></a>
+                                        <a class="btn btn-danger" href="#"><i class="icon_close_alt2"></i></a>
                                     </div>
                                 </td>
                             </tr>
@@ -61,11 +58,7 @@
                     </section>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <a class="btn btn-success" href="rss/create" title="Добавить RSS">Добавить RSS +</a>
-                </div>
-            </div>
+
 
 
         </section>
@@ -73,8 +66,13 @@
             <div class="col-lg-12">
                 <div style = "text-align: center;">
                 <ul class="pagination pagination-ms">
+                    <li><a href="#">«</a></li>
                     <li><a href="#">1</a></li>
                     <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#">»</a></li>
                 </ul>
                 </div>
             </div>
