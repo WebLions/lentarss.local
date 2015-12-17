@@ -104,7 +104,7 @@
         <!-- sidebar menu start-->
         <ul class="sidebar-menu">
           <li class="active">
-            <a class="" href="profile">
+            <a class="" href="/profile">
               <i class="icon_house_alt"></i>
               <span>Административная панель</span>
             </a>
