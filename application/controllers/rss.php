@@ -28,6 +28,10 @@ class Rss extends CI_Controller
         }
 
     }
+    public function delete_old_news()
+    {
+        $this->rss_model->delete_old_news();
+    }
     public function view( $id )
     {
         if($this->data['user_token'] && isset( $id ) ){
