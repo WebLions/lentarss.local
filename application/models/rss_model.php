@@ -31,10 +31,10 @@ class Rss_model extends CI_Model
         $data['rss'] = $query->result_array();
 
         $this->db->select('id, title, description, link, img, date');
-        $this->db->from('rss_item');
+        //$this->db->from('rss_item');
         $this->db->where('id_rss', $data['rss'][0]['id']);
         $this->db->order_by('date', 'desc');
-        $query = $this->db->get();
+        $query = $this->db->get('rss_item' ,200, 0);
         $data['rss_item'] = $query->result_array();
 
         foreach($data['rss_item'] as $k => $v)
@@ -114,7 +114,7 @@ class Rss_model extends CI_Model
         $this->db->where('id_rss', $id);
         $this->db->where('period', '0');
         $this->db->order_by('date', 'desc');
-        $query = $this->db->get('rss_item');
+        $query = $this->db->get('rss_item', 200, 0);
         //echo $this->db->last_query();
         $item_1 = $query->result_array();
 
@@ -167,6 +167,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
                         preg_match("/.*\/(.*).jpg/", $item->enclosure['url'], $output_array);
                         if(!empty($output_array[1])){
                             $img = $this->resize_img_rss($item);
+
                         }else{
                             $img = '/images/default.jpg';
                         }
@@ -176,7 +177,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
                             'id_rss' => $row->id_rss,
                             'id_rss_parser' => $row->id,
                             'title' => (string) $item->title,
-                            'description' => (string) preg_replace("/<img[^>]+>/i", "", $item->description),
+                            'description' => (string) $item->title . " - " . $date,
                             'link' => (string) $item->link,
                             'guid' => (string) $item->guid,
                             'img' => $img,
@@ -233,7 +234,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
 
             $source = $_SERVER['DOCUMENT_ROOT'] . $img;
 
-            $this->image_resize($source,$source,96,52,75);
+            $this->image_resize($source,$source,144,90,100);
 
             return true;
 
@@ -249,20 +250,24 @@ WHERE `rss`.`update`>=`rss`.`period`');
             try{
                 $remote_image = file_get_contents( trim($item->enclosure['url']) );
             }catch(Exception $e){
-                sleep(1);
+                //sleep(1);
                 return  '/images/default.jpg';
             }
-            $file = time() . ".jpg"; //новое имя файла
+            $file = time() . "_" . rand(0,2016) . ".jpg"; //новое имя файла
             $uploadfile = $uploaddir . "/" . $file;
-            if( file_put_contents( $uploadfile, $remote_image) )
-            {
-                $source = $uploadfile;
+            try{
+                file_put_contents( $uploadfile, $remote_image);
 
-                $this->image_resize($source,$source,96,52,100);
-                //sleep(1);
-                return $dir . "/" . $file;
+            }catch(Exception $e){
+
+                return '/images/default.jpg';
             }
-            return false;
+            $source = $uploadfile;
+            $this->image_resize($source,$source,144,90,100);
+            //sleep(1);
+            //$this->data['cache_img'] = $dir . "/" . $file;
+            return $dir . "/" . $file;
+
         }else{
             return false;
         }
