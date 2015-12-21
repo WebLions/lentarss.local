@@ -163,11 +163,11 @@ WHERE `rss`.`update`>=`rss`.`period`');
                     //print_r($item);
                     if( $this->item_check($item, $row->id) ) //проверяем запись по всем параметрам
                     {
+                        $img = '';
                         preg_match("/.*\/(.*).jpg/", $item->enclosure['url'], $output_array);
                         if(!empty($output_array[1])){
                             $img = $this->resize_img_rss($item);
-                        }
-                        if(empty($img)){
+                        }else{
                             $img = '/images/default.jpg';
                         }
                         $date = DateTime::createFromFormat('D, d M Y H:i:s P', trim($item->pubDate) );
@@ -206,30 +206,63 @@ WHERE `rss`.`update`>=`rss`.`period`');
         }
         return true;
     }
+    private function image_resize($outfile,$infile,$neww,$newh,$quality) {
+        $im=imagecreatefromjpeg($infile);
+        $k1=$neww/imagesx($im);
+        $k2=$newh/imagesy($im);
+        $k=$k1>$k2?$k2:$k1;
+
+        $w=intval(imagesx($im)*$k);
+        $h=intval(imagesy($im)*$k);
+
+        $im1=imagecreatetruecolor($w,$h);
+        imagecopyresampled($im1,$im,0,0,0,0,$w,$h,imagesx($im),imagesy($im));
+
+        imagejpeg($im1,$outfile,$quality);
+        imagedestroy($im);
+        imagedestroy($im1);
+    }
+
     private function resize_img_rss($item = array(), $img = '')
     {
         //print_r($item->enclosure['url']);
+
         if(!empty($img))
         {
+            //include "/simple/classSimpleImage.php";
 
-            $image = new Imagick($_SERVER['DOCUMENT_ROOT'] . $img);
-            //$image->readImage("remote_image.jpg");
-            $image->adaptiveResizeImage(96,52);
-            $link = $_SERVER['DOCUMENT_ROOT'] . $img;
-            $image->writeImage($link);
+            $source = $_SERVER['DOCUMENT_ROOT'] . $img;
+
+            $this->image_resize($source,$source,96,52,75);
+
             return true;
 
         }elseif( strpos($item->enclosure['url'], '.jpg') ){
             //echo trim($item->enclosure['url']);
-            $remote_image = file_get_contents( trim($item->enclosure['url']) );
-            file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/images/remote_image.jpg', $remote_image);
-            $image = new Imagick($_SERVER['DOCUMENT_ROOT'] . '/images/remote_image.jpg');
-            //$image->readImage("remote_image.jpg");
-            $image->adaptiveResizeImage(96,52);
-            preg_match("/.*\/(.*).jpg/", $item->enclosure['url'], $output_array);
-            $link = $_SERVER['DOCUMENT_ROOT'] . '/images/' . $output_array[1]. '.jpg';
-            $image->writeImage($link);
-            return '/images/' . $output_array[1]. '.jpg';
+            $dir =  '/images/'. date("Y-m-d");
+            $uploaddir = $_SERVER['DOCUMENT_ROOT'] . $dir;
+
+            if( file_exists($uploaddir) === FALSE )
+            {
+                mkdir($uploaddir, 0700);
+            }
+            try{
+                $remote_image = file_get_contents( trim($item->enclosure['url']) );
+            }catch(Exception $e){
+                sleep(1);
+                return  '/images/default.jpg';
+            }
+            $file = time() . ".jpg"; //новое имя файла
+            $uploadfile = $uploaddir . "/" . $file;
+            if( file_put_contents( $uploadfile, $remote_image) )
+            {
+                $source = $uploadfile;
+
+                $this->image_resize($source,$source,96,52,100);
+                //sleep(1);
+                return $dir . "/" . $file;
+            }
+            return false;
         }else{
             return false;
         }
@@ -277,14 +310,25 @@ WHERE `rss`.`update`>=`rss`.`period`');
 
     public function add_news($id_rss, $title, $link, $description, $period)
     {
-       // print_r($_FILES);
-        //загружаем картинку
-        $uploaddir = $_SERVER['DOCUMENT_ROOT'] . '/images/';
-        $file =  uniqid()  . basename($_FILES['picture']['name']);
-        $uploadfile = $uploaddir . $file;
-        move_uploaded_file($_FILES['picture']['tmp_name'], $uploadfile);
+        $dir =  '/images/'. date("Y-m-d");
+        $uploaddir = $_SERVER['DOCUMENT_ROOT'] . $dir;
 
-        $img = '/images/'. $file;
+        if( file_exists($uploaddir) === FALSE )
+        {
+            mkdir($uploaddir, 0700);
+        }else{
+
+        }
+        //загружаем картинку
+        $file = time() . "_" . basename($_FILES['picture']['name']); //новое имя файла
+        $uploadfile = $uploaddir . "/" . $file;
+        if( @move_uploaded_file($_FILES['picture']['tmp_name'], $uploadfile) ){
+
+        }else{
+            return false;
+        }
+
+        $img = $dir . "/" . $file;
 
         $this->resize_img_rss( NULL ,$img);
 
