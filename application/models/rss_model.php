@@ -93,6 +93,38 @@ class Rss_model extends CI_Model
         return TRUE;
 
     }
+    public function delete_old_news(){
+        $this->db->select('id');
+        $query = $this->db->get("rss");
+        foreach( $query->result_array() as $row)
+        {
+            $data = array();
+            $this->db->select('id, img');
+            $this->db->where('id_rss', $row['id']);
+            $this->db->where('special', 0);
+            $this->db->order_by('date', 'DESC');
+            $query1 = $this->db->get("rss_item",400,200);
+            foreach( $query1->result_array() as $rows)
+            {
+                if($rows['img']!='/images/default.jpg')
+                {
+                    try
+                    {
+                        unlink( $_SERVER['DOCUMENT_ROOT'] . $rows['img'] );
+                    }catch(Exception $e){
+                        //sleep(1);
+                        //continue;
+                    }
+                }
+                $data = array('id' => $rows['id']);
+                $this->db->flush_cache();
+                $this->db->delete('rss_item',$data);
+            }
+
+        }
+
+        return true;
+    }
     public function update_period_rss(){
 
         $query = $this->db->query("UPDATE `rss` SET `update` = `update` + 1");
@@ -245,7 +277,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
 
             if( file_exists($uploaddir) === FALSE )
             {
-                mkdir($uploaddir, 0700);
+                mkdir($uploaddir, 0750);
             }
             try{
                 $remote_image = file_get_contents( trim($item->enclosure['url']) );
@@ -320,7 +352,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
 
         if( file_exists($uploaddir) === FALSE )
         {
-            mkdir($uploaddir, 0700);
+            mkdir($uploaddir, 0750);
         }else{
 
         }
@@ -344,6 +376,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
                         'description' => $description,
                         'img' => $img,
                         'period' => $period,
+                        'special' => '1',
                         'date' => date("Y-m-d H:i:s")
                     );
         $this->db->insert('rss_item', $data);
