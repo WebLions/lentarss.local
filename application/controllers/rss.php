@@ -162,4 +162,12 @@ class Rss extends CI_Controller
         }
 
     }
+    public function delete_log()
+    {
+        if($this->data['user_token'])
+        {
+            $this->rss_model->delete_log();
+            redirect('/errors','refresh');
+        }
+    }
 }
