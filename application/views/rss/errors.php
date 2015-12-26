@@ -10,6 +10,7 @@
                         <li><i class="fa fa-home"></i><a href="/user/profile">Административная панель</a></li>
                         <li><i class="fa fa-laptop"></i><a href="/rss">Ленты RSS</a></li>
                         <li><i class="fa"></i>Ошибки лент</li>
+
                     </ol>
                 </div>
             </div>
@@ -24,8 +25,9 @@
                                                 <tr>
                                                     <th style = "width: 5%;padding-left: 15px">№</th>
                                                     <th style = "width: 40%">Название</th>
-                                                    <th style = "width: 40%">Ссылка</th>
+                                                    <th style = "width: 30%">Ссылка</th>
                                                     <th style = "width: 15%">Дата</th>
+                                                    <th class="icon_cog" style = "width: 2%; text-align: center"></th>
                                                 </tr>
                                                 <?php $i=1; foreach($errors as $row){ ?>
                                                 <tr>
@@ -33,6 +35,11 @@
                                                     <td><?=$row['text']?></td>
                                                     <td><a href="<?=$row['link']?>"><?=$row['link']?></a></td>
                                                     <td><?=$row['date']?></td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                        <a class="btn btn-danger btn-xs" href=""><i class="icon_trash_alt"></i></a>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <?php $i++;} ?>
                                              </table>
@@ -44,6 +51,13 @@
             </div>
 
         </section>
+        <div class="row">
+            <div class="col-lg-12">
+                <div style = "text-align: center;">
+                <a class = "btn btn-danger" href "">Очистить лог</a>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-12">
                 <div style = "text-align: center;">
@@ -59,4 +73,5 @@
                 </div>
             </div>
         </div>
+
     </section>
