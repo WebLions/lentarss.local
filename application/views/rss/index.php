@@ -18,8 +18,10 @@
                     <form action="?" method="get">
                     <table width = "100%">
                         <tr>
-                             <td style = "width: 15%"><a class="btn btn-success" href="rss/create" title="Добавить RSS">Добавить RSS</a></td>
-                             <td style = "width: 80%"><input type="text" name="tag" class="form-control" id="search" placeholder="Поиск по лентам"></td>
+                             <td style = "width: 5%"><a class="btn btn-success" href="rss/create" title="Добавить RSS">Добавить RSS</a></td>
+                             <td style = "width: 5%"><a class="btn btn-success" href="rss/check_rss" title="Проверить RSS">Проверить RSS</button></td>
+                             <td style = "width: 75%"><input type="text" name="tag" class="form-control" id="search" placeholder="Поиск по лентам"></td>
+
                              <td style = "width: 5%"><button class="btn btn-primary" href="" title="Найти ">Найти</button></td>
                         </tr>
                     </table>
@@ -53,6 +55,8 @@
                                     <div class="btn-group">
                                         <a class="btn btn-success" href="/rss/edit/<?=$row['id']?>"><i class="icon_cog"></i></a>
                                         <a class="btn btn-danger" href="/rss/delete/<?=$row['id']?>"><i class="icon_trash_alt"></i></a>
+                                        <a class="btn btn-primary" href=""><i class="icon_tags_alt"></i></a>
+                                        <a class="btn btn-info" href=""><i class="icon_search_alt"></i></a>
                                     </div>
                                 </td>
                             </tr>

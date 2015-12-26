@@ -57,12 +57,25 @@
 
                             <div class="form-group">
                             <label for="id_rss">Лента для спей новости</label>
-                            <select name="id_rss" class="form-control m-bot15">
-                                <?php foreach ($rss as $rs) {?>
-                                    <option value="<?=$rs['id']?>"><?=$rs['title']?></option>
-                                <?php } ?>
-                            </select>
+
+                            <table id="donors_spec" width = "100%">
+                            <tr>
+                                <td>
+                                <select name="id_rss" class="form-control m-bot15">
+                                     <?php foreach ($rss as $rs) {?>
+                                            <option value="<?=$rs['id']?>"><?=$rs['title']?></option>
+                                     <?php } ?>
+                                 </select>
+                                </td>
+                                <td>
+                                    <button class="delete icon_close_alt2 btn btn-danger"></button>
+                                </td>
+                            </tr>
+                            </table>
                             </div>
+
+                            <div id="add_donor_spec" class="tagsinput-add"> Добавить спец.новость</div>
+                            <br>
 
                             <button type="submit" class="btn btn-primary">Создать</button>
                         </form>
