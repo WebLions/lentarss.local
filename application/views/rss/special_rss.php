@@ -46,8 +46,18 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="description">Период</label>
-                                <input type="text" name="period" class="form-control" id="period" placeholder="В минутах">
+                                <label for="datetime">Дата и время размешения</label>
+                                <input type="text" name="datetime" class="form-control" id="datetimepicker" placeholder="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="period">Период</label>
+                                <input type="text" name="period" class="form-control" id="period" placeholder="В часах">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="update">Время закрепления</label>
+                                <input type="text" name="update" class="form-control" id="update" placeholder="В минутах">
                             </div>
 
                             <div class="form-group">
@@ -61,7 +71,7 @@
                             <table id="donors_spec" width = "100%">
                             <tr>
                                 <td>
-                                <select name="id_rss" class="form-control m-bot15">
+                                <select name="id_rss[]" class="form-control m-bot15">
                                      <?php foreach ($rss as $rs) {?>
                                             <option value="<?=$rs['id']?>"><?=$rs['title']?></option>
                                      <?php } ?>
