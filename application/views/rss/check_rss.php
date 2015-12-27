@@ -59,15 +59,7 @@
 
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div style = "text-align: center;">
 
-                       <button class="btn btn-primary icon_check_alt" href="" title="Найти ">Проверить/button>
-
-                    </div>
-                </div>
-            </div>
 
         </section>
 

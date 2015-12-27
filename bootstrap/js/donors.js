@@ -43,3 +43,11 @@ $( document ).ready(function() {
         return false;
     });
 });
+$( document ).ready(function() {
+    $("#icon_tags_alt").click(function () {
+    var result = confirm("Удалить новость?");
+        alert(result);
+        return result;
+    });
+
+});
