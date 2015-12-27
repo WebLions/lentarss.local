@@ -49,9 +49,9 @@ class Rss_model extends CI_Model
         }
         $item_1 = $data['rss_item'];
         $this->db->where('id_rss', $data['rss'][0]['id']);
-        $this->db->where('period >', '0');
+        $this->db->where('now >', '0');
         $this->db->order_by('date', 'desc');
-        $query = $this->db->get('rss_item');
+        $query = $this->db->get('special_item');
         //echo $this->db->last_query();
         $item = $query->result_array();
         $data['rss_item'] = array();
@@ -161,9 +161,36 @@ class Rss_model extends CI_Model
     public function update_period_rss(){
 
         $query = $this->db->query("UPDATE `rss` SET `update` = `update` + 1");
-        $this->db->query("UPDATE `rss_item` SET `period` = `period` - 1 WHERE `period` > 0 ");
+
+        $this->db->query("UPDATE `special_item` SET `now` = `now` - 1 WHERE `now` > 0 ");
+
+        $this->update_period_special();
         //echo $this->db->last_query();
         return true;
+    }
+
+    function update_period_special(){
+
+        $date = DateTime::createFromFormat( "Y-m-d H:i:s", date("Y-m-d H:i:s") );
+        $date->modify( "-1 hour" );
+        $date = $date->format("Y-m-d H:i:00");
+        echo $date;
+        $query = $this->db->query(" SELECT DISTINCT `id_spec`, `date`, `period`, `update` FROM `special_item` WHERE `date` = '{$date}'");
+
+        //$data = array();
+
+        foreach ($query->result_array() as $item) {
+            $newdate = DateTime::createFromFormat("Y-m-d H:i:s", $item['date']);
+            $newdate->modify( "+{$item['period']} hour" );
+            $newdate = $newdate->format("Y-m-d H:i:s");
+
+            $data = array( 'date' => $newdate, 'now'=> $item['update'] );
+            $this->db->where('id_spec', $item['id_spec']);
+            $this->db->update('special_item',$data);
+        }
+
+        return true;
+
     }
     public function view($id)
     {
@@ -184,9 +211,9 @@ class Rss_model extends CI_Model
         $item_1 = $query->result_array();
 
         $this->db->where('id_rss', $id);
-        $this->db->where('period >', '0');
+        $this->db->where('now >', '0');
         $this->db->order_by('date', 'desc');
-        $query = $this->db->get('rss_item');
+        $query = $this->db->get('special_item', 1, 0);
         //echo $this->db->last_query();
         $item = $query->result_array();
 
@@ -291,6 +318,11 @@ WHERE `rss`.`update`>=`rss`.`period`');
         imagedestroy($im1);
     }
 
+    /**
+     * @param array $item
+     * @param string $img
+     * @return bool|string
+     */
     private function resize_img_rss($item = array(), $img = '')
     {
         //print_r($item->enclosure['url']);
@@ -339,8 +371,8 @@ WHERE `rss`.`update`>=`rss`.`period`');
             return false;
         }
 
-
     }
+
     private function item_check($item = array(), $rss = '', $link = '', $key = '')
     {
         $data = array();
@@ -390,12 +422,21 @@ WHERE `rss`.`update`>=`rss`.`period`');
         if(!empty($data))
         {
             $this->db->insert_batch('error_log', $data);
+
         }
         return true;
     }
 
-    public function add_news($id_rss, $title, $link, $description, $period, $update)
+    public function add_news($data)
     {
+        $id_rss = $data['id_rss'];
+        $title = $data['title'];
+        $link = $data['link'];
+        $description = $data['description'];
+        $datetime = $data['datetime'];
+        $period = $data['period'];
+        $update = $data['update'];
+
         $dir =  '/images/'. date("Y-m-d");
         $uploaddir = $_SERVER['DOCUMENT_ROOT'] . $dir;
 
@@ -417,7 +458,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
         $img = $dir . "/" . $file;
 
         $this->resize_img_rss( NULL ,$img);
-
+        $data = array();
         foreach ($id_rss as $id) {
             $data[] = array(
                 'id_rss' => $id,
@@ -427,7 +468,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
                 'img' => $img,
                 'period' => $period,
                 'update' => $update,
-                'date' => date("Y-m-d H:i:s")
+                'date' => $datetime
             );
         }
         $this->db->insert_batch('special_item', $data);
@@ -562,7 +603,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
             foreach($entry->item as $item) {
                 $data[] = array(
                     'title' => (string) $item->title,
-                    'description' => (string) $item->description,
+                    'description' => (string) preg_replace("/<img[^>]+>/i", "", $item->description),
                     'link' => (string) $item->link,
                     'img' => $item->enclosure['url'],
                     'date' => $item->pubDate
@@ -575,4 +616,20 @@ WHERE `rss`.`update`>=`rss`.`period`');
         }
         return $data;
     }
+    public function getRss($id_rss = array())
+    {
+        $this->db->select('id, title');
+        $this->db->or_where_not_in('id',$id_rss);
+        $query = $this->db->get('rss');
+        $data = $query->result_array();
+        return $data;
+    }
 }
+
+
+
+
+
+
+
+
