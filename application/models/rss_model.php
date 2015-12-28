@@ -9,7 +9,6 @@ class Rss_model extends CI_Model
         $this->load->database();
     }
 
-
     public function get_rss_list( $page , $tag = '')
     {
         $page = empty($page) ? 1 : $page;
