@@ -24,6 +24,7 @@
   <?php echo link_tag('bootstrap/css/jquery-jvectormap-1.2.2.css'); ?>
   <?php echo link_tag('bootstrap/css/style.css'); ?>
 
+
 </head>
 
   <body>
