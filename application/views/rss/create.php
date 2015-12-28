@@ -33,12 +33,12 @@
                                     <label for="description">Краткое описание</label>
                                     <input type="text" name="description" class="form-control" id="description" placeholder="Описание">
                                 </div>
-
+<!--
                                 <div class="form-group">
                                     <label for="period">Дата публикации</label>
                                     <input type="text" name="publication_date" class="form-control" id="period" placeholder="Минуты">
                                 </div>
-
+-->
                                 <div class="form-group">
                                     <label for="period">Период обновления ленты</label>
                                     <input type="text" name="period" class="form-control" id="period" placeholder="Минуты">

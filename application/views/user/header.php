@@ -71,13 +71,13 @@
 
           </li>
           <li>
-            <a class="" href="/special_rss">
+            <a class="" href="/special_news">
               <i class="icon_genius"></i>
               <span>Спец. новости</span>
             </a>
           </li>
           <li>
-            <a class="" href="/special_news">
+            <a class="" href="/rss/create_special_news">
               <i class="icon_genius"></i>
               <span>Добавить SN</span>
             </a>

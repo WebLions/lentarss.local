@@ -1,5 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+$config['key_captcha'] = '6Le37xMTAAAAAC6LRAmzQKC0hdHMp9278XyEVsPg'; //Google Secret Key
 /*
 |--------------------------------------------------------------------------
 | Base Site URL

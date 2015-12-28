@@ -19,71 +19,58 @@
                         <header class="panel-heading">
                             Редактирование новости
                         </header>
+
                         <div class="panel-body">
-                            <form role="form" id="create_rss" method="post">
+                            <form role="form" id="create_rss" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="title">Название новости</label>
-                                    <input type="text" value="<?php echo $rss[0]['title']?>" name="title" class="form-control" id="title" placeholder="Имя ленты">
+                                    <input type="text" value="<?php echo $news[0]['title']?>" name="title" class="form-control" id="title" placeholder="Заголовок новости">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Ссылка</label>
-                                    <input type="text" value="<?php echo $rss[0]['link']?>" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
+                                    <input type="text" value="<?php echo $news[0]['link']?>" name="link" class="form-control" id="link" placeholder="Ссылка на новость">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Краткое описание</label>
-                                    <input type="text" value="<?php echo $rss[0]['description']?>" name="description" class="form-control" id="description" placeholder="Описание">
+                                    <input type="text" value="<?php echo $news[0]['description']?>" name="description" class="form-control" id="description" placeholder="Описание">
                                 </div>
                                 <div class="form-group">
                                     <label for="datetime">Дата и время размещения</label>
-                                    <input type="text" name="datetime" class="form-control" id="datetimepicker" placeholder="">
+                                    <input type="text" value="<?php echo $news[0]['date']?>" name="datetime" class="form-control" id="datetimepicker" placeholder="">
                                 </div>
                                 <div class="form-group">
                                     <label for="period">Период</label>
-                                    <input type="text" name="period" class="form-control" id="period" placeholder="В часах">
+                                    <input type="text" value="<?php echo $news[0]['period']?>" name="period" class="form-control" id="period" placeholder="В часах">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="update">Время закрепления</label>
-                                    <input type="text" name="update" class="form-control" id="update" placeholder="В минутах">
+                                    <input type="text"  value="<?php echo $news[0]['update']?>" name="update" class="form-control" id="update" placeholder="В минутах">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="description">Изображение</label>
+                                    <img src="<?php echo $news[0]['img']?>" />
                                     <input type="file" name="picture" multiple accept="image/*,image/jpeg">
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-lg-8" >
+                                    <label for="id_rss">Лента для спец новости</label>
 
-                                            <table id="donors_spec" width = "100%">
-                                                <tr>
-                                                    <th style = "width: 80%"> доноры</th>
-                                                    <th style = "width: 20%;text-align:right"></th>
-                                                <?php foreach($rss_parser as $row){?>
-                                                <tr>
-                                                    <td>
-                                                        <select name="id_rss[]" class="form-control m-bot15">
-                                                            <?php foreach ($rss as $rs) {?>
-                                                                <option value="<?=$rs['id']?>"><?=$rs['title']?></option>
-                                                            <?php } ?>
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <button class="delete icon_close_alt2 btn btn-danger"></button>
-                                                    </td>
-                                                </tr>
-                                                <?php } ?>
-                                             </table>
-
-
-                                        </div>
-                                    </div>
-                                    <div id="add_donor_spec" class="tagsinput-add"> Добавить донора</div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="keywords">Ключевые слова</label>
-                                    <input type="text" value="<?php echo $keywords?>" name="keywords" class="form-control" id="keywords" placeholder="">
+                                    <table id="donors_spec" width = "100%">
+                                        <? foreach ($news as $new) {?>
+                                            <tr>
+                                                <td>
+                                                    <select name="id_rss[]" class="form-control m-bot15">
+                                                        <option value="<?=$new['id']?>"><?=$new['title']?></option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <button class="delete icon_close_alt2 btn btn-danger"></button>
+                                                </td>
+                                            </tr>
+                                        <? }?>
+                                    </table>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Сохранить</button>
                             </form>
