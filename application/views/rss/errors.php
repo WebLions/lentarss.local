@@ -27,7 +27,7 @@
                                                     <th style = "width: 40%">Название</th>
                                                     <th style = "width: 30%">Ссылка</th>
                                                     <th style = "width: 15%">Дата</th>
-                                                    <th class="icon_cog" style = "width: 2%; text-align: center"></th>
+                                                    <!--<th class="icon_cog" style = "width: 2%; text-align: center"></th>-->
                                                 </tr>
                                                 <?php $i=1; foreach($errors as $row){ ?>
                                                 <tr>
@@ -35,11 +35,13 @@
                                                     <td><?=$row['text']?></td>
                                                     <td><a href="<?=$row['link']?>"><?=$row['link']?></a></td>
                                                     <td><?=$row['date']?></td>
+                                                    <!--
                                                     <td>
                                                         <div class="btn-group">
                                                         <a class="btn btn-danger btn-xs" href="/rss/detele_log"><i class="icon_trash_alt"></i></a>
                                                         </div>
                                                     </td>
+                                                    -->
                                                 </tr>
                                                 <?php $i++;} ?>
                                              </table>
@@ -58,6 +60,7 @@
                 </div>
             </div>
         </div>
+        <!--
         <div class="row">
             <div class="col-lg-12">
                 <div style = "text-align: center;">
@@ -72,6 +75,6 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div>-->
 
     </section>

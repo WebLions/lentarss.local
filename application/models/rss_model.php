@@ -240,6 +240,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
                 $data = array(
                     'text'=> "Не рабочая лента ".$row->link,
                     'link'=> "/rss/edit/".$row->id_rss,
+                    'rang'=> "1",
                     'date'=> date("Y-m-d H:i:s")
                 );
                 $this->db->insert('error_log', $data);
@@ -407,13 +408,14 @@ WHERE `rss`.`update`>=`rss`.`period`');
         if( !isset($item->pubDate) || empty($item->pubDate) && $key ==1 ) {
             $date = DateTime::createFromFormat('D, d M Y H:i:s P', trim($item->pubDate));
             $date_1 = $date->format('Y-m-d');
-            $date_1 = date('Y-m-d');
+            $date_2 = date('Y-m-d');
             $interval = $date_1->diff($date_2);
             if( $interval->format('%a') >= 10)
             {
                 $data[] = array(
                     'text'=> "Лента " . $link . " не обновлялась " . $interval->format('%a') . " день.",
                     'link'=> "/rss/edit/".$rss,
+                    'rang'=> "1",
                     'date'=> date("Y-m-d H:i:s")
                 );
             }
@@ -435,6 +437,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
         $datetime = $data['datetime'];
         $period = $data['period'];
         $update = $data['update'];
+        $id_spec = time();
 
         $dir =  '/images/'. date("Y-m-d");
         $uploaddir = $_SERVER['DOCUMENT_ROOT'] . $dir;
@@ -461,6 +464,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
         foreach ($id_rss as $id) {
             $data[] = array(
                 'id_rss' => $id,
+                'id_spec' => $id_spec,
                 'title' => $title,
                 'link' => $link,
                 'description' => $description,
@@ -479,10 +483,11 @@ WHERE `rss`.`update`>=`rss`.`period`');
         $data = $query->result_array();
         return $data;
     }
-    public function errors()
+    public function errors($rang = 0)
     {
         $this->db->order_by('date','desc');
-        $query = $this->db->get('error_log');
+        $this->db->where('rang', $rang);
+        $query = $this->db->get('error_log', 200, 0);
         $data['errors'] = $query->result_array();
         return $data;
     }
@@ -604,7 +609,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
                     'title' => (string) $item->title,
                     'description' => (string) preg_replace("/<img[^>]+>/i", "", $item->description),
                     'link' => (string) $item->link,
-                    'img' => $item->enclosure['url'],
+                    'img' => isset($item->enclosure['url'])? $item->enclosure['url'] : "/images/default.jpg",
                     'date' => $item->pubDate
                 );
                 $i++;
@@ -622,6 +627,100 @@ WHERE `rss`.`update`>=`rss`.`period`');
         $query = $this->db->get('rss');
         $data = $query->result_array();
         return $data;
+    }
+    public function get_list_spec()
+    {
+        $this->db->group_by('id_spec');
+        $query = $this->db->get('special_item');
+        //echo $this->db->last_query();
+        return $query->result_array();
+    }
+    public function checkNews($id)
+    {
+
+        $this->db->query(" UPDATE `special_item` SET `now` = `update`, `date` = '" . date('Y-m-d H:i:s')."' WHERE `id_spec` = '".$id."' ");
+
+    }
+    public function oncheckNews($id)
+    {
+
+        $this->db->query(" UPDATE `special_item` SET `now` = 0 WHERE `id_spec` = '".$id."' ");
+
+    }
+    public function special_to_edit($id)
+    {
+        $this->db->select('special_item.*, rss.title');
+        $this->db->from('special_item');
+        $this->db->where('id_spec',$id);
+        $this->db->join('rss','rss.id = special_item.id_rss');
+        $query = $this->db->get();
+        //echo $this->db->last_query();
+        return $query->result_array();
+    }
+    public function delete_special($id)
+    {
+        $this->db->where('id_spec',$id);
+        $this->db->delete('special_item');
+    }
+    public function edit_special($id, $post)
+    {
+        $title = $post['title'];
+        $link = $post['link'];
+        $description = $post['description'];
+        $period = $post['period'];
+        $update = $post['update'];
+        $date = $post['datetime'];
+
+        if(isset($_FILES['picture'])){
+            $query = $this->db->query("SELECT `img` FROM `special_item` WHERE `id_spec` = '".$id."' ");
+            $result = $query->result_array();
+            unlink( $_SERVER['DOCUMENT_ROOT'] . $result[0]['img'] );
+
+            $dir =  '/images/'. date("Y-m-d");
+            $uploaddir = $_SERVER['DOCUMENT_ROOT'] . $dir;
+
+            if( file_exists($uploaddir) === FALSE )
+            {
+                mkdir($uploaddir, 0750);
+            }else{
+
+            }
+            //загружаем картинку
+            $file = time() . "_" . basename($_FILES['picture']['name']); //новое имя файла
+            $uploadfile = $uploaddir . "/" . $file;
+            if( @move_uploaded_file($_FILES['picture']['tmp_name'], $uploadfile) ){
+
+            }else{
+                return false;
+            }
+
+            $img = $dir . "/" . $file;
+            $this->resize_img_rss( NULL ,$img);
+
+        }
+
+            $data = array(
+                'title' => $title,
+                'link' => $link,
+                'description' => $description,
+                'period' => $period,
+                'update' => $update,
+                'date' => $date
+            );
+        if(!empty($img)){
+            $data = array(
+                'title' => $title,
+                'link' => $link,
+                'description' => $description,
+                'period' => $period,
+                'update' => $update,
+                'date' => $date,
+                'img' => $img
+            );
+        }
+        $this->db->where('id_spec', $id);
+        $this->db->update('special_item', $data);
+        return true;
     }
 }
 

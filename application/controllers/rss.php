@@ -106,7 +106,7 @@ class Rss extends CI_Controller
         {
             $result = $this->rss_model->add_news( $this->input->post() );
             if($result){
-                redirect('/rss','refresh');
+                redirect('/special_news','refresh');
             }else{
                 redirect('/special_rss','refresh');
             }
@@ -158,6 +158,15 @@ class Rss extends CI_Controller
         }
 
     }
+    public function clear($id)
+    {
+        if($this->data['user_token'])
+        {
+            $this->rss_model->delete_rss_news($id);
+            redirect('/rss','refresh');
+        }
+
+    }
     public function delete_log()
     {
         if($this->data['user_token'])
@@ -173,6 +182,44 @@ class Rss extends CI_Controller
             $this->load->view('user/header.php');
             $this->load->view('rss/check_rss.php');
             $this->load->view('user/footer.php');
+        }
+    }
+    public function special_news()
+    {
+        if($this->data['user_token'])
+        {
+            $this->data['news'] = $this->rss_model->get_list_spec();
+            $this->load->view('user/header.php');
+            $this->load->view('rss/special_news.php', $this->data);
+            $this->load->view('user/footer.php');
+        }
+    }
+    public function delete_special($id){
+        if($this->data['user_token'])
+        {
+            $this->rss_model->delete_special($id);
+            redirect('/special_news','refresh');
+        }
+    }
+    public function edit_special($id)
+    {
+        if($this->data['user_token'])
+        {
+            $this->form_validation->set_rules('title','Название','trim|required|xss_clean');
+            if( $this->form_validation->run() == TRUE )
+            {
+                $result = $this->rss_model->edit_special($id, $this->input->post());
+                if($result){
+                    redirect('/special_news','refresh');
+                }else{
+                    redirect('/rss/edit_special/'.$id ,'refresh');
+                }
+            }else {
+                $this->data['news'] = $this->rss_model->special_to_edit($id);
+                $this->load->view('user/header.php');
+                $this->load->view('rss/edit_special.php', $this->data);
+                $this->load->view('user/footer.php');
+            }
         }
     }
 }

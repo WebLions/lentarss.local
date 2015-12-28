@@ -30,6 +30,9 @@
                 </div>
             </div>
 
+            <div class="row" id="check_item">
+
+            </div>
 
         </section>
 

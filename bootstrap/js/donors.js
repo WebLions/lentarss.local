@@ -56,14 +56,33 @@ $( document ).ready(function() {
 
         });
     });
+    $('input.state').click(function(){
+        var id = $(this).val();
+        if( $(this).is(':checked') ){
+            $.post('/ajax/checkNews', {id: id}, function(data){
+
+            });
+        }else{
+            $.post('/ajax/oncheckNews', {id: id}, function(data){
+
+            });
+        }
+    });
 });
 
 
 $( document ).ready(function() {
-    $("#icon_tags_alt").click(function () {
-        var result = confirm("Удалить новость?");
-        alert(result);
-        return result;
+    $("#clear").click(function (e) {
+        if(confirm("Удалить все новости?")===false){
+            e.preventDefault();
+            return false;
+        }
+    });
+    $("#delete").click(function (e) {
+        if(confirm("Удалить ленту?")===false){
+            e.preventDefault();
+            return false;
+        }
     });
 
 });
