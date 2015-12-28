@@ -46,7 +46,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="datetime">Дата и время размешения</label>
+                                <label for="datetime">Дата и время размещения</label>
                                 <input type="text" name="datetime" class="form-control" id="datetimepicker" placeholder="">
                             </div>
 
