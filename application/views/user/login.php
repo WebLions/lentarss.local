@@ -14,6 +14,7 @@
                 <span class="input-group-addon"><i class="icon_key_alt"></i></span>
                 <input type="password" name="password" class="form-control" placeholder="Password">
             </div>
+            <div class="g-recaptcha" data-sitekey="6Le37xMTAAAAACpxDcN8QFh6SRghTcUZBXPSq_Ks"></div>
           <!--  <label class="checkbox">
                 <input type="checkbox" value="remember-me"> Remember me
                 <span class="pull-right"> <a href="#"> Forgot Password?</a></span>
