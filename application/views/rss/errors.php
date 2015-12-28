@@ -37,7 +37,7 @@
                                                     <td><?=$row['date']?></td>
                                                     <td>
                                                         <div class="btn-group">
-                                                        <a class="btn btn-danger btn-xs" href=""><i class="icon_trash_alt"></i></a>
+                                                        <a class="btn btn-danger btn-xs" href="/rss/detele_log"><i class="icon_trash_alt"></i></a>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -54,7 +54,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div style = "text-align: center;">
-                <a class = "btn btn-danger" href "">Очистить лог</a>
+                <a class = "btn btn-danger" href="/rss/delete_log">Очистить лог</a>
                 </div>
             </div>
         </div>
