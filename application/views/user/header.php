@@ -76,6 +76,12 @@
               <span>Спец. новости</span>
             </a>
           </li>
+          <li>
+            <a class="" href="/special_news">
+              <i class="icon_genius"></i>
+              <span>Добавить SN</span>
+            </a>
+          </li>
 
           <li class="sub-menu">
             <a href="/logout" class="">
