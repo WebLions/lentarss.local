@@ -56,7 +56,14 @@ $( document ).ready(function() {
 
         });
     });
+});
 
 
+$( document ).ready(function() {
+    $("#icon_tags_alt").click(function () {
+        var result = confirm("Удалить новость?");
+        alert(result);
+        return result;
+    });
 
 });
