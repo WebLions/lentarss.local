@@ -30,7 +30,7 @@
                                                     <!--<th class="icon_cog" style = "width: 2%; text-align: center"></th>-->
                                                 </tr>
                                                 <?php $i=1; foreach($errors as $row){ ?>
-                                                <tr>
+                                                <tr style="border-bottom: 1px solid #999;">
                                                     <td style = "padding-left: 15px"><?=$i?></td>
                                                     <td><?=$row['text']?></td>
                                                     <td><a href="<?=$row['link']?>"><?=$row['link']?></a></td>

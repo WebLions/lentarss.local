@@ -62,7 +62,7 @@
                                             <tr>
                                                 <td>
                                                     <select name="id_rss[]" class="form-control m-bot15">
-                                                        <option value="<?=$new['id']?>"><?=$new['title']?></option>
+                                                        <option value="<?=$new['id_rss']?>"><?=$new['title']?></option>
                                                     </select>
                                                 </td>
                                                 <td>
@@ -72,6 +72,7 @@
                                         <? }?>
                                     </table>
                                 </div>
+                                <div id="add_donor_spec" class="tagsinput-add"> Добавить ленту</div>
                                 <button type="submit" class="btn btn-primary">Сохранить</button>
                             </form>
 
