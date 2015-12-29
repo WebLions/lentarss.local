@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
-$config['key_captcha'] = '6Le37xMTAAAAAC6LRAmzQKC0hdHMp9278XyEVsPg'; //Google Secret Key
+$config['publick_key_captcha'] = '6Le37xMTAAAAACpxDcN8QFh6SRghTcUZBXPSq_Ks'; //убличный
+$config['secret_key_captcha'] = '6Le37xMTAAAAAC6LRAmzQKC0hdHMp9278XyEVsPg';  //секретный
 /*
 |--------------------------------------------------------------------------
 | Base Site URL

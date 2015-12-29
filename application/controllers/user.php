@@ -27,7 +27,7 @@ class User extends CI_Controller {
             if(!empty($recaptcha))
             {
                 $google_url="https://www.google.com/recaptcha/api/siteverify";
-                $secret=$this->config->item('key_captcha');
+                $secret=$this->config->item('secret_key_captcha');
                 //echo $secret;
                 $ip=$_SERVER['REMOTE_ADDR'];
                 $url=$google_url."?secret=".$secret."&response=".$recaptcha."&remoteip=".$ip;
@@ -51,8 +51,9 @@ class User extends CI_Controller {
                 redirect('login');
             }
         }else{
+            $data['key'] = $this->config->item('publick_key_captcha');
             $this->load->view('user/login_header');
-            $this->load->view('user/login');
+            $this->load->view('user/login',$data);
             $this->load->view('user/footer');
         }
 

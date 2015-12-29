@@ -171,10 +171,10 @@ class Rss_model extends CI_Model
     function update_period_special(){
 
         $date = DateTime::createFromFormat( "Y-m-d H:i:s", date("Y-m-d H:i:s") );
-        $date->modify( "-1 hour" );
+        //$date->modify( "-1 hour" );
         $date = $date->format("Y-m-d H:i:00");
         echo $date;
-        $query = $this->db->query(" SELECT DISTINCT `id_spec`, `date`, `period`, `update` FROM `special_item` WHERE `date` = '{$date}'");
+        $query = $this->db->query(" SELECT DISTINCT `id_spec`, `date`, `period`, `update` FROM `special_item` WHERE `period` > '0' AND `date` = '{$date}'");
 
         //$data = array();
 
@@ -202,10 +202,12 @@ class Rss_model extends CI_Model
         $this->db->from('rss_item');
         $this->db->join('rss_parser','rss_parser.id = rss_item.id_rss_parser');
   */
-        $this->db->where('id_rss', $id);
-        $this->db->where('period', '0');
-        $this->db->order_by('date', 'desc');
-        $query = $this->db->get('rss_item', 200, 0);
+
+        $query = $this->db->query("SELECT `id`,`title`,`description`,`link`,`img`,`date` FROM `rss_item` WHERE `id_rss` = '{$id}'
+UNION
+SELECT `id`,`title`,`description`,`link`,`img`,`date` FROM `special_item` WHERE `id_rss` = '{$id}' AND `now` = '0'
+ORDER BY `date` DESC
+LIMIT 0, 200");
         //echo $this->db->last_query();
         $item_1 = $query->result_array();
 
@@ -216,24 +218,30 @@ class Rss_model extends CI_Model
         //echo $this->db->last_query();
         $item = $query->result_array();
 
-        $data['rss_item'] = $item + $item_1;
+        $data['rss_item'] = array_merge($item, $item_1);
+        //$data['rss_item'] = $item + $item_1;
 
         return $data;
 
     }
     public function parser(){
+        set_time_limit(9800);
         $rep = 0;
         //include('/simple/simple_html_dom.php');
         $this->update_period_rss();
         $query = $this->db->query('SELECT `rss_parser`.`id` as `id`, `rss_parser`.`id_rss` as `id_rss`, `rss_parser`.`link` as `link`
 FROM `rss_parser` LEFT JOIN `rss` ON `rss`.`id`=`rss_parser`.`id_rss`
 WHERE `rss`.`update`>=`rss`.`period`');
+
+        $text = "Старт парсера. Найдено " . $query->num_rows() . " лент для обновления<br>";
+
         //echo $this->db->last_query();
         $result = $query->result();
+        //print_r($result);
         //echo "<pre>";
         //print_r($result);
         foreach($result as $row){
-
+            $text.= "Парсим {$row->link} <br>";
             $xml = @simplexml_load_file($row->link);
             if (!$xml) {
 
@@ -244,14 +252,17 @@ WHERE `rss`.`update`>=`rss`.`period`');
                     'date'=> date("Y-m-d H:i:s")
                 );
                 $this->db->insert('error_log', $data);
+                $text.= "Лента не работает<br>";
                 continue;
             }
 
-            //echo $row->link;
+            echo $row->link . "<br>";
             //print_r($xml);
             $key = 1;
+            $coll = 0;
             foreach($xml as $entry) {
                 $data = array();
+                $name = $entry->title;
                 foreach($entry->item as $item) {
                     //print_r($item);
                     if( $this->item_check($item, $row->id, $item->link, $key) ) //проверяем запись по всем параметрам
@@ -267,13 +278,15 @@ WHERE `rss`.`update`>=`rss`.`period`');
                         }
                         $date = DateTime::createFromFormat('D, d M Y H:i:s P', trim($item->pubDate) );
                         $date = $date->format('Y-m-d H:i:s');
+                        $coll++;
+                        $guid = isset($item->guid) ? $item->guid : $date;
                         $data[] = array(
                             'id_rss' => $row->id_rss,
                             'id_rss_parser' => $row->id,
                             'title' => (string) $item->title,
-                            'description' => (string) $item->link . " - " . $date,
+                            'description' => (string) $name . " - " . $date,
                             'link' => (string) $item->link,
-                            'guid' => (string) $item->guid,
+                            'guid' => (string) $guid,
                             'img' => $img,
                             'date' => $date
                         );
@@ -282,23 +295,25 @@ WHERE `rss`.`update`>=`rss`.`period`');
                 if(!empty($data))
                 {
                     $this->db->insert_batch('rss_item',$data);
+                    $text.= "Добавленно {$coll} новых новостей<br>";
+                }else{
+                    $text.= "Добавленно {$coll} новых новостей<br>";
                 }
             }
             $this->db->where('id',$row->id_rss);
             $this->db->update('rss', array('update'=>0));
             //print_r($data);
-            //echo "Gotovo!";
-            if($rep != $row->id_rss){
-                $rep = $row->id_rss;
-                $data = array(
-                    'text'=> "Обновлена лента №".$row->id_rss,
-                    'link'=> "/rss/edit/".$row->id_rss,
-                    'date'=> date("Y-m-d H:i:s")
-                );
-                $this->db->insert('error_log', $data);
-            }
 
         }
+        $text.= "Конец парсинга<br>";
+
+            $data = array(
+                'text'=> $text,
+                'link'=> "/rss/edit/",
+                'date'=> date("Y-m-d H:i:s")
+            );
+            $this->db->insert('error_log', $data);
+
         return true;
     }
     private function image_resize($outfile,$infile,$neww,$newh,$quality) {
@@ -376,7 +391,10 @@ WHERE `rss`.`update`>=`rss`.`period`');
     private function item_check($item = array(), $rss = '', $link = '', $key = '')
     {
         $data = array();
-        $query = $this->db->query("SELECT `id` FROM `rss_item` WHERE `id_rss_parser` = '".$rss."' AND `guid` = '".$item->guid."'");
+        $date = DateTime::createFromFormat('D, d M Y H:i:s P', trim($item->pubDate));
+        $date = $date->format('Y-m-d H:i:s');
+        $guid = isset($item->guid) ? $item->guid : $date;
+        $query = $this->db->query("SELECT `id` FROM `rss_item` WHERE `id_rss_parser` = '".$rss."' AND `guid` = '".$guid."'");
         if($query->num_rows() > 0)
         {
             return false;
@@ -389,14 +407,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
                             'date'=> date("Y-m-d H:i:s")
                             );
         }
-        if( !isset($item->description) || empty($item->description) )
-        {
-            $data[] = array(
-                'text'=> "Не найденно описание новости № ".$item->guid,
-                'link'=> "/rss/edit/".$rss,
-                'date'=> date("Y-m-d H:i:s")
-            );
-        }
+
         if( !isset($item->link) || empty($item->link) )
         {
             $data[] = array(
@@ -662,7 +673,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
         $this->db->where('id_spec',$id);
         $this->db->delete('special_item');
     }
-    public function edit_special($id, $post)
+    public function edit_special($spec, $post)
     {
         $title = $post['title'];
         $link = $post['link'];
@@ -670,12 +681,14 @@ WHERE `rss`.`update`>=`rss`.`period`');
         $period = $post['period'];
         $update = $post['update'];
         $date = $post['datetime'];
-
-        if(isset($_FILES['picture'])){
-            $query = $this->db->query("SELECT `img` FROM `special_item` WHERE `id_spec` = '".$id."' ");
+        $id = $post['id_rss'];
+        if(!empty($_FILES['picture']['name'])){
+            $query = $this->db->query("SELECT `img` FROM `special_item` WHERE `id_spec` = '".$spec."' ");
             $result = $query->result_array();
-            unlink( $_SERVER['DOCUMENT_ROOT'] . $result[0]['img'] );
-
+                if(file_exists($_SERVER['DOCUMENT_ROOT'] . $result[0]['img']) === true)
+                {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . $result[0]['img']);
+                }
             $dir =  '/images/'. date("Y-m-d");
             $uploaddir = $_SERVER['DOCUMENT_ROOT'] . $dir;
 
@@ -698,7 +711,27 @@ WHERE `rss`.`update`>=`rss`.`period`');
             $this->resize_img_rss( NULL ,$img);
 
         }
-
+        $data = array();
+        $query = $this->db->query("SELECT * FROM `special_item` WHERE `id_spec` = '".$spec."' ");
+        $result = $query->result_array();
+        $time = time();
+        foreach ($id as $item) {
+           $data[] = array(
+               'title' => $result[0]['title'],
+               'id_rss'=> $item,
+               'id_spec' => $time,
+               'link' => $result[0]['link'],
+               'img' => $result[0]['img'],
+               'description' => $result[0]['description'],
+               'period' => $result[0]['period'],
+               'update' => $result[0]['update'],
+               'date' => $result[0]['date'],
+           );
+        }
+        $this->db->insert_batch('special_item', $data);
+        $this->db->where('id_spec', $spec);
+        $this->db->delete('special_item');
+        unset($data);
             $data = array(
                 'title' => $title,
                 'link' => $link,
@@ -718,7 +751,10 @@ WHERE `rss`.`update`>=`rss`.`period`');
                 'img' => $img
             );
         }
-        $this->db->where('id_spec', $id);
+
+        //$this->db->get('special_item', $data);
+
+        $this->db->where('id_spec', $time);
         $this->db->update('special_item', $data);
         return true;
     }

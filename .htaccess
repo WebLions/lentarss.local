@@ -1,3 +1,4 @@
+php_value display_errors 1
 AddDefaultCharset Off
 <IfModule dir_module>
     DirectoryIndex index.php
