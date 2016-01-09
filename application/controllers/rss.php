@@ -60,7 +60,8 @@ class Rss extends CI_Controller
                                                     $this->input->post('description'),
                                                     $this->input->post('period'),
                                                     $this->input->post('keywords'),
-                                                    $this->input->post('donors'));
+                                                    $this->input->post('donors'),
+                                                    $this->input->post('donors_mobile'));
                 if($result){
                     redirect('/rss','refresh');
                 }else{
@@ -134,7 +135,8 @@ class Rss extends CI_Controller
                     $this->input->post('description'),
                     $this->input->post('period'),
                     $this->input->post('keywords'),
-                    $this->input->post('donors'));
+                    $this->input->post('donors'),
+                    $this->input->post('donors_mobile'));
                 if($result){
                     redirect('/rss','refresh');
                 }else{

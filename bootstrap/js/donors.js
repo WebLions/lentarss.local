@@ -10,6 +10,7 @@ $( document ).ready(function() {
         $('#donors').append(
             '<tr>' +
             '<td><input type="text" name="donors[]" class="form-control" placeholder=""></td>' +
+            '<td><input type="text" name="donors_mobile[]" class="form-control" placeholder=" префикс моб.версии, если есть"></td>' +
             '<td><button class="delete icon_close_alt2 btn btn-danger"></button></td>'+
             '</tr>'
         );
@@ -51,7 +52,8 @@ $( document ).ready(function() {
 
     $('#check').click(function(){
         var link = $('#link').val();
-        $.post('/ajax/checkRss', {link: link}, function(data){
+        var mobile = $('#mobile').val();
+        $.post('/ajax/checkRss', {link: link, mobile: mobile}, function(data){
            $("#check_item").html(data);
 
         });

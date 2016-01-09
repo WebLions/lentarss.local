@@ -27,19 +27,32 @@ class Rss_model extends CI_Model
         return $query->result_array();
     }
 
-    public function generate($url)
+    public function generate($url) //генерирует rss ленту
     {
         $this->db->select('id, title, link, description');
         $this->db->from('rss');
         $this->db->where('link', $url);
         $query = $this->db->get();
         $data['rss'] = $query->result_array();
+        $id = $data['rss'][0]['id'];
+        //////--------------------------------------------------------------
+/*
+        $this->db->select('rss_item.id, rss_item.title, rss_item.description, rss_item.link, rss_item.img, rss_item.date, rss_parser.mobile');
+        $this->db->join('rss_parser','rss_parser.id = rss_item.id_rss_parser');
+        $this->db->where('rss_item.id_rss', $data['rss'][0]['id']);
+        $this->db->order_by('rss_item.date', 'desc');
+        $query = $this->db->get('rss_item' ,200, 0);*/
 
-        $this->db->select('id, title, description, link, img, date');
-        //$this->db->from('rss_item');
-        $this->db->where('id_rss', $data['rss'][0]['id']);
-        $this->db->order_by('date', 'desc');
-        $query = $this->db->get('rss_item' ,200, 0);
+        $query = $this->db->query("
+SELECT `rss_item`.`id`, `rss_item`.`title`, `rss_item`.`description`, `rss_item`.`link`, `rss_item`.`img`, `rss_item`.`date` , `rss_parser`.`mobile`
+FROM `rss_item`
+JOIN `rss_parser` ON `rss_item`.`id_rss_parser` = `rss_parser`.`id`
+WHERE `rss_item`.`id_rss` = '{$id}'
+UNION
+SELECT `id`,`title`,`description`,`link`,`img`,`date`, NULL FROM `special_item` WHERE `id_rss` = '{$id}' AND `now` = '0'
+ORDER BY `date` DESC
+LIMIT 0, 200");
+
         $data['rss_item'] = $query->result_array();
 
         foreach($data['rss_item'] as $k => $v)
@@ -47,20 +60,20 @@ class Rss_model extends CI_Model
             $data['rss_item'][$k]['date'] = date("r", strtotime($v['date']));
         }
         $item_1 = $data['rss_item'];
+
         $this->db->where('id_rss', $data['rss'][0]['id']);
         $this->db->where('now >', '0');
         $this->db->order_by('date', 'desc');
-        $query = $this->db->get('special_item');
-        //echo $this->db->last_query();
+        $query = $this->db->get('special_item', 1, 0);
         $item = $query->result_array();
-        $data['rss_item'] = array();
-        $data['rss_item'] = $item + $item_1;
 
+        $data['rss_item'] = array();
+        $data['rss_item'] = array_merge($item, $item_1);
         return $data;
 
     }
 
-    public function add_rss($title = '',$link = '', $description = '', $period = '', $keywords = '', $donors = array()){
+    public function add_rss($title = '',$link = '', $description = '', $period = '', $keywords = '', $donors = array(), $donors_mobile = array()){
 
         //создаем новую ленту
         $data = array(
@@ -91,7 +104,8 @@ class Rss_model extends CI_Model
         foreach ($donors as $key => $donor) {
             $data[] = array(
                 'id_rss' => $rss_id,
-                'link' => $donor
+                'link' => $donor,
+                'mobile' => $donors_mobile[$key]
             );
         }
         $this->db->insert_batch('rss_parser', $data);
@@ -197,18 +211,21 @@ class Rss_model extends CI_Model
         $this->db->where('rss.id',$id);
         $query = $this->db->get('rss');
         $data['rss'] = $query->result_array();
-/*
+  /*
         $this->db->select('rss_item.title, rss_item.description, rss_item.link, rss_item.img');
         $this->db->from('rss_item');
         $this->db->join('rss_parser','rss_parser.id = rss_item.id_rss_parser');
   */
 
-        $query = $this->db->query("SELECT `id`,`title`,`description`,`link`,`img`,`date` FROM `rss_item` WHERE `id_rss` = '{$id}'
+        $query = $this->db->query("
+SELECT `rss_item`.`id`, `rss_item`.`title`, `rss_item`.`description`, `rss_item`.`link`, `rss_item`.`img`, `rss_item`.`date` , `rss_parser`.`mobile`
+FROM `rss_item`
+JOIN `rss_parser` ON `rss_item`.`id_rss_parser` = `rss_parser`.`id`
+WHERE `rss_item`.`id_rss` = '{$id}'
 UNION
-SELECT `id`,`title`,`description`,`link`,`img`,`date` FROM `special_item` WHERE `id_rss` = '{$id}' AND `now` = '0'
+SELECT `id`,`title`,`description`,`link`,`img`,`date`, NULL FROM `special_item` WHERE `id_rss` = '{$id}' AND `now` = '0'
 ORDER BY `date` DESC
 LIMIT 0, 200");
-        //echo $this->db->last_query();
         $item_1 = $query->result_array();
 
         $this->db->where('id_rss', $id);
@@ -219,7 +236,6 @@ LIMIT 0, 200");
         $item = $query->result_array();
 
         $data['rss_item'] = array_merge($item, $item_1);
-        //$data['rss_item'] = $item + $item_1;
 
         return $data;
 
@@ -270,9 +286,8 @@ WHERE `rss`.`update`>=`rss`.`period`');
                         $key = 0;
                         $img = '';
                         preg_match("/.*\/(.*).jpg/", $item->enclosure['url'], $output_array);
-                        if(!empty($output_array[1])){
+                        if(!empty($output_array[1]) && ($item->enclosure['type'] == "image/jpeg") ){
                             $img = $this->resize_img_rss($item);
-
                         }else{
                             $img = '/images/default.jpg';
                         }
@@ -534,7 +549,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
         $this->db->delete('rss_parser');
         return true;
     }
-    public function edit_rss($id = '', $title = '',$link = '', $description = '', $period = '', $keywords = '', $donors = array()){
+    public function edit_rss($id = '', $title = '',$link = '', $description = '', $period = '', $keywords = '', $donors = array(), $donors_mobile = array()){
 
         //создаем новую ленту
         $data = array(
@@ -564,36 +579,43 @@ WHERE `rss`.`update`>=`rss`.`period`');
         }
         $this->db->insert_batch('keywords', $data);
 
+
         //записываем доноров ленты
+        //удаление доноров
         $data = array();
         $this->db->where('id_rss',$id);
         $query = $this->db->get('rss_parser');
         $result = $query->result_array();
         if(!empty($result[0])){
             foreach ($result as $item) {
-                if(in_array($item['link'],$donors)){
-
-                }else{
-                    //echo array_search($item['link'],$donors);
+                if( empty($donors[ $item['id'] ]) ){
                     $this->db->where('id_rss', $id);
-                    $this->db->where('link', $item['link']);
+                    $this->db->where('id', $item['id']);
                     $this->db->delete('rss_parser');
                 }
             }
         }
+        //запись или обновление новых доноров
         foreach ($donors as $key => $donor) {
             $this->db->where('id_rss',$id);
-            $this->db->where('link',$donor);
+            $this->db->where('id',$key);
             $query = $this->db->get('rss_parser');
-            if($query->num_rows <= 0){
-                $data[] = array(
+            if($query->num_rows > 0){
+                $data = array(
+                            'id_rss' => $id,
+                            'link' => $donor,
+                            'mobile' => $donors_mobile[$key]
+                        );
+                $this->db->where('id',$key);
+                $this->db->update('rss_parser', $data);
+            }else{
+                $data = array(
                     'id_rss' => $id,
-                    'link' => $donor
+                    'link' => $donor,
+                    'mobile' => $donors_mobile[$key]
                 );
+                $this->db->insert('rss_parser', $data);
             }
-        }
-        if(!empty($data)){
-            $this->db->insert_batch('rss_parser', $data);
         }
 
         return TRUE;

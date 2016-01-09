@@ -7,7 +7,7 @@
         <?php foreach($rss_item as $item){ ?>
         <item>
             <title><?=$item['title']?></title>
-            <link><?=$item['link']?></link>
+            <link><?=$item['link'].$item['mobile']?></link>
             <description><?=$item['description']?></description>
             <pubDate><?=$item['date']?></pubDate>
             <enclosure url="http://<? echo $_SERVER['SERVER_NAME'] .  $item['img']?>"/>

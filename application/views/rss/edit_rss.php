@@ -48,7 +48,10 @@
                                                 <?php foreach($rss_parser as $row){?>
                                                 <tr>
                                                     <td>
-                                                        <input type="text" value="<?php echo $row['link']?>" name="donors[]" class="form-control" placeholder="">
+                                                        <input type="text" value="<?php echo $row['link']?>" name="donors[<?php echo $row['id']?>]" class="form-control" placeholder="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" value="<?php echo $row['mobile']?>" name="donors_mobile[<?php echo $row['id']?>]" class="form-control" placeholder="">
                                                     </td>
                                                     <td>
                                                         <button class="delete icon_close_alt2 btn btn-danger"></button>
