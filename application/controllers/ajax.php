@@ -15,6 +15,7 @@ class Ajax extends CI_Controller
     {
 
         $this->data['rss_item'] = $this->rss_model->test_rss($_POST['link']);
+        $this->data['mobile'] =  $_POST['mobile'];
         $this->load->view('ajax/check_rss', $this->data);
     }
     public function getRss()

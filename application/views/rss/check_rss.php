@@ -24,6 +24,7 @@
                     <div class="form-group">
                         <label for="title">Проверяемая лента</label>
                         <input type="text" name="title" class="form-control" id="link" placeholder="Ссылка">
+                        <input type="text" name="mobile" class="form-control" id="mobile" placeholder="mobile">
                         <button class="btn btn-primary" id="check" title="Проверить">Проверить</button>
                     </div>
 

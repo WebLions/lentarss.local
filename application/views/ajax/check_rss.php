@@ -15,5 +15,5 @@
     </section>
 </div>
 <div class="col-lg-6">
-    <iframe id="frame" scrolling="no" src="<?=$rss_item[0]['link'];?>" style="width: 375px; height: 667px; display: inline-block; background-image: none;"></iframe>
+    <iframe id="frame" scrolling="no" src="<?=$rss_item[0]['link'].$mobile?>" style="width: 375px; height: 667px; display: inline-block; background-image: none;"></iframe>
 </div>
