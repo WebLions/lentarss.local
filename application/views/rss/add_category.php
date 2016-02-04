@@ -7,8 +7,8 @@
 
                     <ol class="breadcrumb">
                         <li><i class="fa fa-home"></i><a href="/user/profile">Административная панель</a></li>
-                        <li><i class="fa fa-laptop"></i><a href="/rss">категории</a></li>
-                        <li><i class="fa"></i>Редактирование категории</li>
+                        <li><i class="fa fa-laptop"></i><a href="/rss">Источники</a></li>
+                        <li><i class="fa"></i>Добавления категории</li>
                     </ol>
                 </div>
             </div>
@@ -17,24 +17,24 @@
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            Редактирование категории
+                            Добавление новой категории
                         </header>
                         <div class="panel-body">
                             <form role="form" id="create_rss" method="post">
                                 <div class="form-group">
                                     <label for="title">Название</label>
-                                    <input type="text" value="<?php echo $rss[0]['title']?>" name="title" class="form-control" id="title" placeholder="Имя ленты">
+                                    <input type="text" name="title" class="form-control" id="title" placeholder="Имя ленты">
                                 </div>
                                 <div class="form-group">
-                                    <label for="description">Ссылка</label>
-                                    <input type="text" value="<?php echo $rss[0]['link']?>" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
+                                    <label for="link">Ссылка</label>
+                                    <input type="text" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Краткое описание</label>
-                                    <input type="text" value="<?php echo $rss[0]['description']?>" name="description" class="form-control" id="description" placeholder="Описание">
+                                    <input type="text" name="description" class="form-control" id="description" placeholder="Описание">
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                                <button type="submit" class="btn btn-primary">Создать</button>
                             </form>
 
 
