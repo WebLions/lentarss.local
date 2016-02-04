@@ -9,6 +9,7 @@ class Ajax extends CI_Controller
         $this->load->helper(array('url', 'html'));
         $this->load->library('form_validation');
         $this->load->model('rss_model');
+        $this->load->model('ajax_model');
     }
 
     public function checkRss()
@@ -37,4 +38,53 @@ class Ajax extends CI_Controller
         $this->rss_model->oncheckNews($_POST['id']);
 
     }
+    public function saveCategory($update = NULL)
+    {
+        $this->form_validation->set_rules('title','Заголовок','trim|required|xss_clean');
+        $this->form_validation->set_rules('description','Описание','trim|required|xss_clean');
+
+        if($this->form_validation->run() == true)
+        {
+            $this->ajax_model->saveCategory( $this->input->post() , $update );
+            $this->data['category'] = $this->rss_model->getCategory();
+            $this->load->view('ajax/listCategory');
+        }else{
+            $this->data['error'] = 1;
+        }
+        echo json_encode($this->data);
+    }
+    public function getCategoryInfo()
+    {
+        $this->data['category'] = $this->ajax_model->getCategoty( $this->input->post['id'] );
+        $this->load->view('ajax/categoryInfo', $this->data);
+    }
+    public function deleteCategory()
+    {
+        $result = $this->ajax_model->deleteCategory( $this->input->post['id'] );
+        if($result){
+            $this->data['error'] = 0;
+        }else{
+            $this->data['error'] = 1;
+        }
+        echo json_encode($this->data);
+    }
+    public function saveDonor($update = NULL)
+    {
+        $this->form_validation->set_rules('title','Заголовок','trim|required|xss_clean');
+        $this->form_validation->set_rules('description','Описание','trim|required|xss_clean');
+        $this->form_validation->set_rules('link','Ссылка','trim|required|xss_clean');
+        $this->form_validation->set_rules('period','Период обновления','trim|required|xss_clean');
+        $this->form_validation->set_rules('mobile','Моб. версия','trim|xss_clean');
+
+        if($this->form_validation->run() == true)
+        {
+            $this->ajax_model->saveDonor( $this->input->post() , $update );
+            $this->data['category'] = $this->rss_model->getCategory();
+            $this->load->view('ajax/listDonor');
+        }else{
+            $this->data['error'] = 1;
+        }
+        echo json_encode($this->data);
+    }
+
 }

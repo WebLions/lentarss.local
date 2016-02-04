@@ -48,10 +48,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'angara5.beget.ru';
-$db['default']['username'] = 'fb3809sd_lentrss';
-$db['default']['password'] = '7o9Y^{1D';
-$db['default']['database'] = 'fb3809sd_lentrss';
+$db['default']['hostname'] = '212.109.223.89';
+$db['default']['username'] = 'project_lentarss';
+$db['default']['password'] = 'bv5E2etQEAbA6p9S';
+$db['default']['database'] = 'project_lentarss';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
