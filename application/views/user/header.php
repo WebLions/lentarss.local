@@ -59,16 +59,21 @@
           <li class="sub-menu">
             <a href="/rss" class="">
               <i class="icon_document_alt"></i>
-              <span>Ленты</span>
+              <span>Категории</span>
             </a>
 
+          </li>
+
+          <li class="sub-menu">
+            <a href="/source" class="">
+              <i class="icon_desktop"></i>
+              <span>Источники </span>            </a>
           </li>
           <li class="sub-menu">
             <a href="/errors" class="">
               <i class="icon_desktop"></i>
               <span>Ошибки RSS </span>
             </a>
-
           </li>
           <li>
             <a class="" href="/special_news">

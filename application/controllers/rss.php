@@ -13,7 +13,7 @@ class Rss extends CI_Controller
     public function generate($url)//генерация ленты рсс
     {
         $this->data = $this->rss_model->generate($url);
-        $this->load->view('rss.php',$this->data);
+        $this->load->view('category.php',$this->data);
     }
 
     public function index( )
@@ -43,14 +43,13 @@ class Rss extends CI_Controller
             redirect('404','refresh');
         }
     }
-    public function create()
+    public function add_source()
     {
         if($this->data['user_token']){
 
             $this->form_validation->set_rules('title','Название','trim|required|xss_clean');
             $this->form_validation->set_rules('link','Ссылка','trim|required|xss_clean');
             $this->form_validation->set_rules('description','Описание','trim|required|xss_clean');
-            $this->form_validation->set_rules('period','Описание','trim|required|xss_clean');
             $this->form_validation->set_rules('keywords','Ключеве слова','trim|required|xss_clean');
 
             if( $this->form_validation->run() == TRUE )
@@ -58,10 +57,7 @@ class Rss extends CI_Controller
                 $result = $this->rss_model->add_rss($this->input->post('title'),
                                                     $this->input->post('link'),
                                                     $this->input->post('description'),
-                                                    $this->input->post('period'),
-                                                    $this->input->post('keywords'),
-                                                    $this->input->post('donors'),
-                                                    $this->input->post('donors_mobile'));
+                                                    $this->input->post('keywords'));
                 if($result){
                     redirect('/rss','refresh');
                 }else{
@@ -69,7 +65,7 @@ class Rss extends CI_Controller
                 }
             }else {
                 $this->load->view('user/header.php');
-                $this->load->view('rss/create.php');
+                $this->load->view('rss/add_category.php');
                 $this->load->view('user/footer.php');
             }
         }
