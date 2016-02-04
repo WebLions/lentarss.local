@@ -4,8 +4,7 @@
         <title><?=$rss[0]['title']?></title>
         <link>http://<? echo $_SERVER['SERVER_NAME'] . "/" . $rss[0]['link']?>.rss</link>
         <description><?=$rss[0]['description']?></description>
-        <?php foreach($rss_item as $item){ ?>
-        <item>
+        <?php foreach($rss_item as $item){ ?><item>
             <title><?=$item['title']?></title>
             <link><?=$item['link'].$item['mobile']?></link>
             <description><?=$item['description']?></description>
