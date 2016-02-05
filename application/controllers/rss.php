@@ -13,7 +13,7 @@ class Rss extends CI_Controller
     public function generate($url)//генерация ленты рсс
     {
         $this->data = $this->rss_model->generate($url);
-        $this->load->view('category.php',$this->data);
+        $this->load->view('index.php',$this->data);
     }
 
     public function index( )

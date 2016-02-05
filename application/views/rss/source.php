@@ -31,36 +31,33 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <section class="panel">
-
+                <section class="panel" id="sources">
                     <table class="table table-striped table-advance table-hover">
-                        <tbody>
-                        <tr>
-                            <th><i class="icon_header"></i> Название</th>
-                            <th><i class="icon_calendar"></i> Краткое описание</th>
-                            <th><i class="icon_calendar"></i> Rss</th>
-                            <th><i class="icon_calendar"></i> Дата</th>
-                            <th><i class="icon_cogs"></i> Действие</th>
+                        <thead>
+                        <th>Адресс</th>
+                        <th>Примечание</th>
+                        <th><i class="icon_cogs"></i>Действия</th>
 
-                        </tr>
-                        <? foreach($rss as $row){ ?>
+                        </thead>
+                        <tbody>
+                        <? foreach($listAdress as $listAdres) { ?>
                             <tr>
-                                <td><a href="/rss/view/<?=$row['id']?>"><?=$row['title']?></a></td>
-                                <td><?=$row['description']?></td>
-                                <td><a href="/<?=$row['link']?>.rss" target="_blank"><?=$row['link']?></a></td>
-                                <td><?=$row['date']?></td>
+                                <td><?=$listAdres['source']?></td>
+                                <td><?=$listAdres['note']?></td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-success" href="/rss/edit/<?=$row['id']?>"><i class="icon_cog"></i></a>
-                                        <a class="btn btn-danger" id="delete" href="/rss/delete/<?=$row['id']?>"><i class="icon_trash_alt"></i></a>
-                                        <a class="btn btn-primary" id="clear" href="/rss/clear/<?=$row['id']?>"><i class="icon_tags_alt"></i></a>
-                                        <!-- <a class="btn btn-info" href=""><i class="icon_search_alt"></i></a> -->
+                                        <a class="btn btn-success editAdress" data-id="<?=$listAdres['id']?>" data-toggle="modal" data-target="#myModalEditAdress"  href="#"><i class="icon_cog"></i></a>
+                                        <a class="btn btn-danger deleteAdress" data-id="<?=$listAdres['id']?>" href="#"><i class="icon_trash_alt"></i></a>
                                     </div>
                                 </td>
                             </tr>
                         <? } ?>
                         </tbody>
                     </table>
+                <div class = "button-center">
+                    <a class="btn btn-success " href="/add_source"><i class="glyphicon glyphicon-plus"></i></a>
+                </div>
+
                 </section>
             </div>
         </div>
