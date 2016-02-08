@@ -76,6 +76,17 @@ class Rss extends CI_Controller
 
         $this->rss_model->parser();
     }
+    public function source()
+    {
+        if( $this->data['user_token'] ){
+            $this->data = $this->rss_model->errors();
+            $this->load->view('user/header.php');
+            $this->load->view('rss/source.php', $this->data);
+            $this->load->view('user/footer.php');
+        }else{
+            redirect('404','refresh');
+        }
+    }
 
     public function errors()
     {

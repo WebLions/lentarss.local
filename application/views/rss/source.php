@@ -31,35 +31,62 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <section class="panel" id="sources">
-                    <table class="table table-striped table-advance table-hover">
-                        <thead>
-                        <th>Адресс</th>
-                        <th>Примечание</th>
-                        <th><i class="icon_cogs"></i>Действия</th>
+                <section class="panel">
+                    <header class="panel-heading">
+                        Добавление источника
+                    </header>
 
-                        </thead>
-                        <tbody>
-                        <? foreach($listAdress as $listAdres) { ?>
-                            <tr>
-                                <td><?=$listAdres['source']?></td>
-                                <td><?=$listAdres['note']?></td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a class="btn btn-success editAdress" data-id="<?=$listAdres['id']?>" data-toggle="modal" data-target="#myModalEditAdress"  href="#"><i class="icon_cog"></i></a>
-                                        <a class="btn btn-danger deleteAdress" data-id="<?=$listAdres['id']?>" href="#"><i class="icon_trash_alt"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        <? } ?>
-                        </tbody>
-                    </table>
-                <div class = "button-center">
-                    <a class="btn btn-success " href="/add_source"><i class="glyphicon glyphicon-plus"></i></a>
-                </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="title">Название новости</label>
+                            <input type="text" name="title" class="form-control" id="title" placeholder="Имя ленты">
+                        </div>
 
+                        <div class="form-group">
+                            <label for="link">Ссылка</label>
+                            <input type="text" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Краткое описание</label>
+                            <input type="text" name="description" class="form-control" id="description" placeholder="Описание">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="datetime">Дата и время размещения</label>
+                            <input type="text" name="datetime" class="form-control" id="datetimepicker" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="period">Период</label>
+                            <input type="text" name="period" class="form-control" id="period" placeholder="В часах">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="update">Время закрепления</label>
+                            <input type="text" name="update" class="form-control" id="update" placeholder="В минутах">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Выберите изображение</label>
+                            <input type="file" name="picture" multiple accept="image/*,image/jpeg">
+                        </div>
+
+                        <br>
+
+                        <div id="add_donor" class="tagsinput-add"> Добавить спец.новость</div>
+                        <br>
+
+                        <button type="submit" class="btn btn-primary">Создать</button>
+                        </form>
+
+
+
+                    </div>
                 </section>
             </div>
+
+
         </div>
 
 
