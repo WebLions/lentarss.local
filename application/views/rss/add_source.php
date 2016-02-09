@@ -6,8 +6,8 @@
             <div class="col-lg-12">
 
                 <ol class="breadcrumb">
-                    <li><i class="fa fa-home"></i><a href="/user/profile">Административная панель</a></li>
-                    <li><i class="fa fa-laptop"></i><a href="/rss/source">Добавление источников</a></li>
+                    <li><i class="fa fa-home"></i><a href="/rss">Административная панель</a></li>
+                    <li><i class="fa fa-laptop"></i>Добавление источников</li>
                 </ol>
             </div>
         </div>
