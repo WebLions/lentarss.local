@@ -231,4 +231,22 @@ class Rss extends CI_Controller
             }
         }
     }
+    public function source_items()
+    {
+        if($this->data['user_token'])
+        {
+            $this->load->view('user/header.php');
+            $this->load->view('rss/source.php');
+            $this->load->view('user/footer.php');
+        }
+    }
+    public function add_source_item()
+    {
+        if($this->data['user_token'])
+        {
+            $this->load->view('user/header.php');
+            $this->load->view('rss/add_source.php');
+            $this->load->view('user/footer.php');
+        }
+    }
 }

@@ -18,7 +18,7 @@
                     <form action="?" method="get">
                     <table width = "100%">
                         <tr>
-                             <td style = "width: 5%"><a class="btn btn-success" href="rss/add_source" title="Добавить источник">Добавить категорию</a></td>
+                             <td style = "width: 5%"><a class="btn btn-success" href="rss/add_category" title="Добавить источник">Добавить категорию</a></td>
                         </tr>
                     </table>
                         </form>
