@@ -65,7 +65,7 @@
           </li>
 
           <li class="sub-menu">
-            <a href="/rss/source" class="">
+            <a href="/rss/source_items" class="">
               <i class="icon_desktop"></i>
               <span>Источники </span>            </a>
           </li>
