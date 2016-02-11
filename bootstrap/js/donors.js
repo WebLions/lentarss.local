@@ -15,8 +15,23 @@ $( document ).ready(function() {
             '</tr>'
         );
     });
+    $("#add_category").click(function () {
+
+        $('#category_block').append(
+            '<tr>' +
+            '<td><label for="period">Категория</label></td>' +
+            '<td><select id="category" name="category"><option></option></select></td>'+
+            '<td><button class="delete icon_close_alt2 btn btn-danger"></button></td>'+
+            '</tr>'
+        );
+    });
 
     $('#donors').on('click', '.delete', function (e) {
+        e.preventDefault();
+        $(this).closest( 'tr' ).remove();
+        return false;
+    });
+    $('#category_block').on('click', '.delete', function (e) {
         e.preventDefault();
         $(this).closest( 'tr' ).remove();
         return false;

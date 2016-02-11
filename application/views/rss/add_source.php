@@ -40,10 +40,18 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="period">Категория</label>
-                            <select id="category" name="category">
-                                <option></option>
-                            </select>
+                            <table id="category_block">
+                                <tr>
+                                    <td><label for="period">Категория</label></td>
+                                    <td>
+                                        <select id="category" name="category">
+                                            <option></option>
+                                        </select>
+                                    </td>
+                                    <td><button id="add_category" class="glyphicon glyphicon-plus btn btn-primary"></button></td>
+                                </tr>
+                            </table>
+
 
                         </div>
 
