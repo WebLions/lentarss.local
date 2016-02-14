@@ -7,7 +7,7 @@
 
                     <ol class="breadcrumb">
                         <li><i class="fa fa-home"></i><a href="/user/profile">Административная панель</a></li>
-                        <li><i class="fa fa-laptop"></i><a href="/rss">категории</a></li>
+                        <li><i class="fa fa-laptop"></i><a href="/rss">Категории</a></li>
                         <li><i class="fa"></i>Редактирование категории</li>
                     </ol>
                 </div>
