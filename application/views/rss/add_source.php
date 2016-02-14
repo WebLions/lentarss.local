@@ -17,7 +17,7 @@
                     <header class="panel-heading">
                         Добавление источника
                     </header>
-
+                    <form action="/rss/add_source" method="post">
                     <div class="panel-body">
                         <div class="form-group">
                             <label for="title">Название </label>

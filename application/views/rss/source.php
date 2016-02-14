@@ -45,20 +45,20 @@
 
                         </tr>
                         <??>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a class="btn btn-success" href=""><i class="icon_cog"></i></a>
-                                        <a class="btn btn-danger" href=""><i class="icon_trash_alt"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-success" href=""><i class="icon_cog"></i></a>
+                                    <a class="btn btn-danger" href=""><i class="icon_trash_alt"></i></a>
+                                </div>
+                            </td>
+                        </tr>
                         <??>
                         </tbody>
                     </table>
