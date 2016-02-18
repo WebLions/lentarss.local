@@ -1,5 +1,4 @@
-<?php echo '<?xml version="1.0" encoding="utf-8"?>'; ?>
-<rss version="2.0">
+<?php echo new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><rss version="2.0" />', LIBXML_NOERROR | LIBXML_ERR_NONE | LIBXML_ERR_FATAL);?>
     <channel>
         <title><?=$rss[0]['title']?></title>
         <link>http://<? echo $_SERVER['SERVER_NAME'] . "/" . $rss[0]['link']?>.rss</link>

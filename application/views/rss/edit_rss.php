@@ -28,6 +28,7 @@
                                 <div class="form-group">
                                     <label for="description">Ссылка</label>
                                     <input type="text" value="<?php echo $rss[0]['link']?>" name="link" class="form-control" id="link" placeholder="Ссылка на ленту">
+                                    <p><?=$error['link']?></p>
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Краткое описание</label>

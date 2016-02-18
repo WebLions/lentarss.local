@@ -17,7 +17,8 @@
                 <form action="?" method="get">
                     <table width = "100%">
                         <tr>
-                            <td style = "width: 5%"><a class="btn btn-success" href="/rss/add_source_item" title="Добавить источник">Добавить источник</a></td>
+                            <td style = "width: 5%"><a class="btn btn-success" href="/rss/add_source" title="Добавить источник">Добавить источник</a></td>
+                            <td style = "width: 5%"><a class="btn btn-success" href="/rss/check" title="Проверить источник">Проверить источник</a></td>
                             <td style = "width: 75%"><input type="text" name="tag" class="form-control" id="search" placeholder="Поиск по источникам"></td>
                             <td style = "width: 5%"><button class="btn btn-primary" href="" title="Найти ">Найти</button></td>
                         </tr>
@@ -44,22 +45,21 @@
                             <th><i class="icon_cogs"></i> Действие</th>
 
                         </tr>
-                        <??>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <div class="btn-group">
-                                    <a class="btn btn-success" href=""><i class="icon_cog"></i></a>
-                                    <a class="btn btn-danger" href=""><i class="icon_trash_alt"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <??>
+                        <?foreach($source as $item){?>
+                            <tr>
+                                <td><?=$item['title']?></td>
+                                <td><?=$item['link']?></td>
+                                <td><?=$item['period']?></td>
+                                <td><?=$item['mobile']?></td>
+                                <td><?=$item['tag']?></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a class="btn btn-success" href="/rss/edit_source"><i class="icon_cog"></i></a>
+                                        <a class="btn btn-danger" href="/rss/delete_source/<?=$item['id']?>"><i class="icon_trash_alt"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?}?>
                         </tbody>
                     </table>
                 </section>

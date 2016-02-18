@@ -42,6 +42,7 @@ $route['errors'] = "rss/errors";
 //$route['rss/(\d+)/(:any)'] = "rss/index/$1/$2";
 $route['profile'] = "user/profile";
 $route['special_news'] = "rss/special_news";
+$route['source'] = "rss/source";
 $route['login'] = "user/login";
 $route['logout'] = "user/logout";
 $route['default_controller'] = "home";

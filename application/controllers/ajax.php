@@ -25,6 +25,11 @@ class Ajax extends CI_Controller
         $this->data['rss'] = $this->rss_model->getRss($_POST['id_rss']);
         $this->load->view('ajax/getRss', $this->data);
     }
+    public function getCategory()
+    {
+        $this->data['category'] = $this->ajax_model->getCategoryAjax($_POST['category']);
+        $this->load->view('ajax/getCategory', $this->data);
+    }
     public function checkNews()
     {
 

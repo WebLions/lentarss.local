@@ -19,6 +19,7 @@
                     </header>
                     <form action="/rss/add_source" method="post">
                     <div class="panel-body">
+                        <form action="/rss/add_source" method="post">
                         <div class="form-group">
                             <label for="title">Название </label>
                             <input type="text" name="title" class="form-control" id="title" placeholder="Имя ленты">
@@ -44,8 +45,10 @@
                                 <tr>
                                     <td><label for="period">Категория</label></td>
                                     <td>
-                                        <select id="category" name="category">
-                                            <option></option>
+                                        <select id="category" name="category[]">
+                                            <?foreach($category as $item){?>
+                                                <option value="<?=$item['id']?>"><?=$item['title']?></option>
+                                            <?}?>
                                         </select>
                                     </td>
                                     <td><button id="add_category" class="glyphicon glyphicon-plus btn btn-primary"></button></td>
@@ -63,8 +66,6 @@
 
                         <button type="submit" class="btn btn-primary">Добавить</button>
                         </form>
-
-
 
                     </div>
                 </section>

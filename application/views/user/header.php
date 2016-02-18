@@ -26,53 +26,36 @@
 
 
 </head>
-
   <body>
   <!-- container section start -->
   <section id="container" class="">
-
-
     <header class="header dark-bg">
       <div class="toggle-nav">
         <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom"><i class="icon_menu"></i></div>
       </div>
     </header>
     <!--header end-->
-
     <!--sidebar start-->
     <aside>
       <div id="sidebar"  class="nav-collapse ">
         <!-- sidebar menu start-->
-        <ul class="sidebar-menu">
+        <ul class="sidebar-menu"><!--
           <li class="active">
             <a class="" href="/profile">
               <i class="icon_house_alt"></i>
               <span>Админ. панель</span>
             </a>
-          </li>
-          <li class="active">
-            <a class="" href="/user/new_pass">
-              <i class="icon_house_alt"></i>
-              <span>Настройки</span>
-            </a>
-          </li>
+          </li>-->
           <li class="sub-menu">
             <a href="/rss" class="">
               <i class="icon_document_alt"></i>
               <span>Категории</span>
             </a>
-
           </li>
-
           <li class="sub-menu">
             <a href="/rss/source_items" class="">
               <i class="icon_desktop"></i>
-              <span>Источники </span>            </a>
-          </li>
-          <li class="sub-menu">
-            <a href="/errors" class="">
-              <i class="icon_desktop"></i>
-              <span>Ошибки RSS </span>
+              <span>Источники </span>
             </a>
           </li>
           <li>
@@ -87,14 +70,25 @@
               <span>Добавить SN</span>
             </a>
           </li>
-
+          <li class="sub-menu">
+            <a href="/errors" class="">
+              <i class="icon_desktop"></i>
+              <span>Ошибки RSS </span>
+            </a>
+          </li>
+          <li>
+          <li class="active">
+            <a class="" href="/user/new_pass">
+              <i class="icon_house_alt"></i>
+              <span>Настройки</span>
+            </a>
+          </li>
           <li class="sub-menu">
             <a href="/logout" class="">
               <i class="icon_table"></i>
               <span>Выход</span>
             </a>
           </li>
-
         </ul>
         <!-- sidebar menu end-->
       </div>
