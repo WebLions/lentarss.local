@@ -17,13 +17,17 @@ $( document ).ready(function() {
     });
     $("#add_category").click(function () {
 
-        $('#category_block').append(
-            '<tr>' +
-            '<td><label for="period">Категория</label></td>' +
-            '<td><select id="category" name="category"><option></option></select></td>'+
-            '<td><button class="delete icon_close_alt2 btn btn-danger"></button></td>'+
-            '</tr>'
-        );
+        $.post('/ajax/getCategory', $('#category_block').find('select').serialize() , function(data) {
+            if(data.length != 0)
+                $('#category_block').append(
+                    '<tr>' +
+                    '<td><label for="period">Категория</label></td>' +
+                    '<td><select id="category" name="category[]">'+ data +'</select></td>' +
+                    '<td><button class="delete icon_close_alt2 btn btn-danger"></button></td>' +
+                    '</tr>'
+                );
+        });
+        return false;
     });
 
     $('#donors').on('click', '.delete', function (e) {

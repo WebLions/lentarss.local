@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Rss_model extends CI_Model
+class Ajax_model extends CI_Model
 {
 
     public function __construct()
@@ -12,7 +12,9 @@ class Rss_model extends CI_Model
     {
         $data = array(
             'title' => $post['title'],
+            'link' => $post['link'],
             'description' => $post['description'],
+            'date' => date('Y-m-d H:i:s')
         );
         $id = isset($post['id'])? $post['id'] : null;
         if($type=="update"&&!empty($id))
@@ -43,6 +45,7 @@ class Rss_model extends CI_Model
         }
         $this->db->insert("donors", $data);
         $id_donor = $this->db->insert_id();
+
         // ключевые слова в отдельную таблицу
         $data = array();
         $keyword = explode(',',$post['keywords']);
@@ -56,7 +59,15 @@ class Rss_model extends CI_Model
         $this->db->insert_batch('keywords', $data);
         return true;
     }
-
+    //get category list for <select>
+    public function getCategoryAjax($id_rss = array())
+    {
+        $this->db->select('id, title');
+        $this->db->or_where_not_in('id',$id_rss);
+        $query = $this->db->get('category');
+        $data = $query->result_array();
+        return $data;
+    }
     public function getCategory($id = null)
     {
         if(!empty($id))
