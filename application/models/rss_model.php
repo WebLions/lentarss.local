@@ -143,16 +143,351 @@ class Rss_model extends CI_Model
         foreach ($post['category'] as $item) {
             $data[] = array('category_id'=>$item, 'source_id'=>$id);
         }
-
         $this->db->insert_batch('category_to_source',$data);
 
         return true;
 
     }
-    //
+    //Редактирование источника
+    //Получение данных для редактирования
+    public function data_to_edit_source($id = 0)
+    {
+        $this->db->select('*');
+        $this->db->where('id',$id);
+        $query = $this->db->get('source');
+        $data['source'] = $query->row();
+
+        $this->db->select('*');
+        $this->db->where('source_id',$id);
+        $query = $this->db->get('category_to_source');
+        $data['category'] = $query->result_array();
+
+        $this->db->select('*');
+        $query = $this->db->get('category');
+        $data['categories'] = $query->result_array();
+
+        return $data;
+    }
+    //Сохранение редактирования
+    public function edit_source($id,$post = array()){
+        $el = 0;
+        foreach ($post['category'] as $item) {
+            if($item==$el)
+                return false;
+            $el = $item;
+        }
+        $data = array(
+            'title' => trim($post['title']),
+            'link' => trim($post['link']),
+            'period' => trim($post['period']),
+            'mobile' => trim($post['mob_version']),
+            'tag' => trim($post['key_words']),
+            'date' => date("Y-m-d H:i:s")
+        );
+        $this->db->where('id',$id);
+        $this->db->update('source', $data);
+
+        $data = array();
+        $this->db->select('*');
+        $this->db->where('source_id',$id);
+        $query = $this->db->get('category_to_source');
+        $result = $query->result_array();
+        foreach ($result as $item) {
+            if( !array_search($item['category_id'],$post['category']) ){
+                $this->db->where('id',$item['id']);
+                $this->db->delete('category_to_source');
+            }
+        }
+        $data = array();
+        foreach ($post['category'] as $item) {
+            if( !array_search($item, $result) ){
+                $data[] = array('category_id'=>$item, 'source_id'=>$id);
+            }
+        }
+        $this->db->insert_batch('category_to_source',$data);
+
+        return true;
+
+    }
+    //Удаление источника
+    public function delete_source($id = 0){
+
+        $this->db->select('id, img');
+        $this->db->where('source_id', $id);
+        $this->db->where('special', 0);
+        $query1 = $this->db->get("item");
+        foreach( $query1->result_array() as $rows)
+        {
+            if($rows['img']!='/images/default.jpg')
+            {
+                try
+                {
+                    unlink( $_SERVER['DOCUMENT_ROOT'] . $rows['img'] );
+                }catch(Exception $e){
+                    //sleep(1);
+                    //continue;
+                }
+            }
+            $data = array('id' => $rows['id']);
+            $this->db->flush_cache();
+            $this->db->delete('item',$data);
+        }
+        $this->db->flush_cache();
+        $this->db->where('id', $id);
+        $this->db->delete('source');
+
+        $this->db->flush_cache();
+        $this->db->where('source_id', $id);
+        $this->db->delete('category_to_source');
+        return true;
+    }
+    //Конец блока источников
+
+    //Сам парсер
+    public function parser(){
+        set_time_limit(9800);
+        //Обновили периоды источников
+        $this->update_period_rss();
+
+        $this->db->select('source.id as source, source.title as title, source.link as link');
+        $this->db->where('source.update >=','source.period');
+        $query = $this->db->get('source');
+
+        echo '<meta http-equiv="content-type" content="text/html; charset=UTF-8" />';
+
+        echo "Старт парсера. Найдено " . $query->num_rows() . " лент для обновления<br>";
 
 
+        foreach($query->result() as $row){
 
+            echo "Парсим {$row->link} <br>";
+
+            $xml = @simplexml_load_file($row->link);
+            if (!$xml) {
+
+                $data = array(
+                    'text'=> "Не рабочая лента ".$row->link,
+                    'link'=> "/rss/edit/".$row->source,
+                    'rang'=> "1",
+                    'date'=> date("Y-m-d H:i:s")
+                );
+                $this->db->insert('error_log', $data);
+                echo "Лента не работает<br>";
+                continue;
+            }
+
+            $coll = 0;
+            foreach($xml as $entry) {
+                $data = array();
+                foreach($entry->item as $item) {
+
+                    if( $this->item_check($item, $row->source, $row->title) ) //проверяем запись по всем параметрам
+                    {
+
+                        preg_match("/.*\/(.*).jpg/", $item->enclosure['url'], $output_array);
+                        print_r($output_array);
+                        if(!empty($output_array[1])){
+                            $img = $this->resize_img_rss($item->enclosure['url'], NULL, $row->source);
+                        }else{
+                            $img = '/images/default.jpg';
+                        }
+                        $date = DateTime::createFromFormat('D, d M Y H:i:s P', trim($item->pubDate) );
+                        $date = $date->format('Y-m-d H:i:s');
+                        $coll++;
+                        $title = md5( trim($item->title) );
+                        $guid = empty($item->guid) ? $title : $item->guid ;
+                        $data[] = array(
+                            'source_id' => $row->source,
+                            'title' => (string) $item->title,
+                            'description' => (string) $row->title . " " . $date,
+                            'link' => (string) $item->link,
+                            'guid' => (string) $guid,
+                            'img' => $img,
+                            'date' => $date
+                        );
+                    }else{
+                        continue 2;
+                    }
+                }
+                if(!empty($data))
+                {
+                    $this->db->insert_batch('item',$data);
+                    echo "Добавленно {$coll} новых новостей<br>";
+                }else{
+                    echo "Добавленно {$coll} новых новостей<br>";
+                }
+            }
+            $this->db->where('id',$row->source);
+            $this->db->update('source', array('update'=>0));
+
+        }
+        echo "Конец парсинга<br>";
+/*
+        $data = array(
+            'text'=> $text,
+            'link'=> "/rss/edit/",
+            'date'=> date("Y-m-d H:i:s")
+        );
+        $this->db->insert('error_log', $data);*/
+
+        return true;
+    }
+    //Нужно обновить периоды перед парсингом
+    public function update_period_rss(){
+
+        $this->db->query("UPDATE `source` SET `update` = `update` + 1");
+
+        //$this->db->query("UPDATE `special_item` SET `now` = `now` - 1 WHERE `now` > 0 ");
+
+        //$this->update_period_special();
+        return true;
+    }
+    //Обновить периоды спец новостей
+    function update_period_special(){
+
+        $date = DateTime::createFromFormat( "Y-m-d H:i:s", date("Y-m-d H:i:s") );
+        //$date->modify( "-1 hour" );
+        $date = $date->format("Y-m-d H:i:00");
+        echo $date;
+        $query = $this->db->query(" SELECT DISTINCT `id_spec`, `date`, `period`, `update` FROM `special_item` WHERE `period` > '0' AND `date` = '{$date}'");
+
+        //$data = array();
+
+        foreach ($query->result_array() as $item) {
+            $newdate = DateTime::createFromFormat("Y-m-d H:i:s", $item['date']);
+            $newdate->modify( "+{$item['period']} hour" );
+            $newdate = $newdate->format("Y-m-d H:i:s");
+
+            $data = array( 'date' => $newdate, 'now'=> $item['update'] );
+            $this->db->where('id_spec', $item['id_spec']);
+            $this->db->update('special_item',$data);
+        }
+
+        return true;
+
+    }
+    //Проверка новости по параметрам
+    private function item_check($item = array(), $source, $title)
+    {
+        $data = array();
+        $title = md5( trim($item->title) );
+        $guid = empty($item->guid) ? $title : $item->guid ;
+
+        $this->db->where('source_id', $source);
+        $this->db->where('guid', $guid);
+        if( $this->db->count_all_results('item') > 0 )
+            return false;
+
+        if( !isset($item->title) || empty($item->title) )
+        {
+            $data[] = array(
+                'text'=> "Не найден заголовок новости № ".$item->guid,
+                'link'=> "/rss/edit/".$source,
+                'date'=> date("Y-m-d H:i:s")
+            );
+        }
+
+        if( !isset($item->link) || empty($item->link) )
+        {
+            $data[] = array(
+                'text'=> "Не найдена ссылка на новость № ".$item->guid,
+                'link'=> "/rss/edit/".$source,
+                'date'=> date("Y-m-d H:i:s")
+            );
+        }
+        if( !isset($item->pubDate) || empty($item->pubDate) ) {
+
+            $data[] = array(
+                'text'=> "Не найдена дата на новость № ".$item->guid,
+                'link'=> "/rss/edit/".$source,
+                'date'=> date("Y-m-d H:i:s")
+            );
+
+            $date = DateTime::createFromFormat('D, d M Y H:i:s P', trim($item->pubDate));
+            $date_1 = $date->format('Y-m-d');
+            $date_2 = date('Y-m-d');
+            $interval = $date_1->diff($date_2);
+            if( $interval->format('%a') >= 10)
+            {
+                $data[] = array(
+                    'text'=> "Лента " . $title . " не обновлялась " . $interval->format('%a') . " день.",
+                    'link'=> "/rss/edit/".$source,
+                    'rang'=> "1",
+                    'date'=> date("Y-m-d H:i:s")
+                );
+            }
+        }
+        if(!empty($data))
+        {
+            $this->db->insert_batch('error_log', $data);
+
+        }
+        return true;
+    }
+    //Ресайз картинки и сохранение
+    private function resize_img_rss($item, $img = '', $source)
+    {
+
+        if(!empty($img))
+        {
+
+            $source = $_SERVER['DOCUMENT_ROOT'] . $img;
+
+            $this->image_resize($source,$source,144,90,100);
+
+            return true;
+
+        }elseif( strpos($item->enclosure['url'], '.jpg') ){
+
+            $dir =  "/images/{$source}/". date("Y-m-d");
+            $uploaddir = $_SERVER['DOCUMENT_ROOT'] . $dir;
+
+            if( file_exists($uploaddir) === FALSE )
+            {
+                mkdir($uploaddir, 0750);
+            }
+            try{
+                $remote_image = file_get_contents( trim($item) );
+            }catch(Exception $e){
+                //sleep(1);
+                echo "не получил картинку";
+                return  '/images/default.jpg';
+            }
+            $file = time() . "_" . rand(0,2016) . ".jpg"; //новое имя файла
+            $uploadfile = $uploaddir . "/" . $file;
+            try{
+                file_put_contents( $uploadfile, $remote_image);
+
+            }catch(Exception $e){
+                echo "сохранил на сарвер картинку";
+                return '/images/default.jpg';
+            }
+            $source = $uploadfile;
+            $this->image_resize($source,$source,144,90,100);
+
+            return $dir . "/" . $file;
+
+        }else{
+            return '/images/default.jpg';
+        }
+
+    }
+    private function image_resize($outfile,$infile,$neww,$newh,$quality) {
+        $im=imagecreatefromjpeg($infile);
+        $k1=$neww/imagesx($im);
+        $k2=$newh/imagesy($im);
+        $k=$k1>$k2?$k2:$k1;
+
+        $w=intval(imagesx($im)*$k);
+        $h=intval(imagesy($im)*$k);
+
+        $im1=imagecreatetruecolor($w,$h);
+        imagecopyresampled($im1,$im,0,0,0,0,$w,$h,imagesx($im),imagesy($im));
+
+        imagejpeg($im1,$outfile,$quality);
+        imagedestroy($im);
+        imagedestroy($im1);
+    }
 
 
 
@@ -271,40 +606,7 @@ LIMIT 0, 200");*/
 
         return true;
     }
-    public function update_period_rss(){
 
-        $query = $this->db->query("UPDATE `rss` SET `update` = `update` + 1");
-
-        $this->db->query("UPDATE `special_item` SET `now` = `now` - 1 WHERE `now` > 0 ");
-
-        $this->update_period_special();
-        //echo $this->db->last_query();
-        return true;
-    }
-
-    function update_period_special(){
-
-        $date = DateTime::createFromFormat( "Y-m-d H:i:s", date("Y-m-d H:i:s") );
-        //$date->modify( "-1 hour" );
-        $date = $date->format("Y-m-d H:i:00");
-        echo $date;
-        $query = $this->db->query(" SELECT DISTINCT `id_spec`, `date`, `period`, `update` FROM `special_item` WHERE `period` > '0' AND `date` = '{$date}'");
-
-        //$data = array();
-
-        foreach ($query->result_array() as $item) {
-            $newdate = DateTime::createFromFormat("Y-m-d H:i:s", $item['date']);
-            $newdate->modify( "+{$item['period']} hour" );
-            $newdate = $newdate->format("Y-m-d H:i:s");
-
-            $data = array( 'date' => $newdate, 'now'=> $item['update'] );
-            $this->db->where('id_spec', $item['id_spec']);
-            $this->db->update('special_item',$data);
-        }
-
-        return true;
-
-    }
     public function view($id)
     {
         $this->db->select('*');
@@ -335,225 +637,8 @@ LIMIT 0, 200");
         return $data;
 
     }
-    public function parser(){
-        set_time_limit(9800);
-        $rep = 0;
-        //include('/simple/simple_html_dom.php');
-        $this->update_period_rss();
 
-        $this->db->select('source.id as id, category_to_source.category_id as category_id, source.link as link');
-        $this->db->join('category_to_source','category_to_source.source_id=source.id');
-        $this->db->where('source.update >=','source.period');
-        $this->db->get('source');
 
-        $query = $this->db->query('SELECT `rss_parser`.`id` as `id`, `rss_parser`.`id_rss` as `id_rss`, `rss_parser`.`link` as `link`
-FROM `rss_parser` LEFT JOIN `rss` ON `rss`.`id`=`rss_parser`.`id_rss`
-WHERE `rss`.`update`>=`rss`.`period`');
-
-        $text = "Старт парсера. Найдено " . $query->num_rows() . " лент для обновления<br>";
-
-        //echo $this->db->last_query();
-        $result = $query->result();
-        //print_r($result);
-        //echo "<pre>";
-        //print_r($result);
-        foreach($result as $row){
-            $text.= "Парсим {$row->link} <br>";
-            $xml = @simplexml_load_file($row->link);
-            if (!$xml) {
-
-                $data = array(
-                    'text'=> "Не рабочая лента ".$row->link,
-                    'link'=> "/rss/edit/".$row->id_rss,
-                    'rang'=> "1",
-                    'date'=> date("Y-m-d H:i:s")
-                );
-                $this->db->insert('error_log', $data);
-                $text.= "Лента не работает<br>";
-                continue;
-            }
-
-            echo $row->link . "<br>";
-            //print_r($xml);
-            $key = 1;
-            $coll = 0;
-            foreach($xml as $entry) {
-                $data = array();
-                $name = $entry->title;
-                foreach($entry->item as $item) {
-                    //print_r($item);
-                    if( $this->item_check($item, $row->id, $item->link, $key) ) //проверяем запись по всем параметрам
-                    {
-                        $key = 0;
-                        $img = '';
-                        preg_match("/.*\/(.*).jpg/", $item->enclosure['url'], $output_array);
-                        if(!empty($output_array[1])){
-                            $img = $this->resize_img_rss($item);
-                        }else{
-                            $img = '/images/default.jpg';
-                        }
-                        $date = DateTime::createFromFormat('D, d M Y H:i:s P', trim($item->pubDate) );
-                        $date = $date->format('Y-m-d H:i:s');
-                        $coll++;
-                        $guid = isset($item->guid) ? $item->guid : $date;
-                        $data[] = array(
-                            'id_rss' => $row->id_rss,
-                            'id_rss_parser' => $row->id,
-                            'title' => (string) $item->title,
-                            'description' => (string) $name . " - " . $date,
-                            'link' => (string) $item->link,
-                            'guid' => (string) $guid,
-                            'img' => $img,
-                            'date' => $date
-                        );
-                    }
-                }
-                if(!empty($data))
-                {
-                    $this->db->insert_batch('rss_item',$data);
-                    $text.= "Добавленно {$coll} новых новостей<br>";
-                }else{
-                    $text.= "Добавленно {$coll} новых новостей<br>";
-                }
-            }
-            $this->db->where('id',$row->id_rss);
-            $this->db->update('rss', array('update'=>0));
-            //print_r($data);
-
-        }
-        $text.= "Конец парсинга<br>";
-
-            $data = array(
-                'text'=> $text,
-                'link'=> "/rss/edit/",
-                'date'=> date("Y-m-d H:i:s")
-            );
-            $this->db->insert('error_log', $data);
-
-        return true;
-    }
-    private function image_resize($outfile,$infile,$neww,$newh,$quality) {
-        $im=imagecreatefromjpeg($infile);
-        $k1=$neww/imagesx($im);
-        $k2=$newh/imagesy($im);
-        $k=$k1>$k2?$k2:$k1;
-
-        $w=intval(imagesx($im)*$k);
-        $h=intval(imagesy($im)*$k);
-
-        $im1=imagecreatetruecolor($w,$h);
-        imagecopyresampled($im1,$im,0,0,0,0,$w,$h,imagesx($im),imagesy($im));
-
-        imagejpeg($im1,$outfile,$quality);
-        imagedestroy($im);
-        imagedestroy($im1);
-    }
-
-    /**
-     * @param array $item
-     * @param string $img
-     * @return bool|string
-     */
-    private function resize_img_rss($item = array(), $img = '')
-    {
-        //print_r($item->enclosure['url']);
-
-        if(!empty($img))
-        {
-            //include "/simple/classSimpleImage.php";
-
-            $source = $_SERVER['DOCUMENT_ROOT'] . $img;
-
-            $this->image_resize($source,$source,144,90,100);
-
-            return true;
-
-        }elseif( strpos($item->enclosure['url'], '.jpg') ){
-            //echo trim($item->enclosure['url']);
-            $dir =  '/images/'. date("Y-m-d");
-            $uploaddir = $_SERVER['DOCUMENT_ROOT'] . $dir;
-
-            if( file_exists($uploaddir) === FALSE )
-            {
-                mkdir($uploaddir, 0750);
-            }
-            try{
-                $remote_image = file_get_contents( trim($item->enclosure['url']) );
-            }catch(Exception $e){
-                //sleep(1);
-                return  '/images/default.jpg';
-            }
-            $file = time() . "_" . rand(0,2016) . ".jpg"; //новое имя файла
-            $uploadfile = $uploaddir . "/" . $file;
-            try{
-                file_put_contents( $uploadfile, $remote_image);
-
-            }catch(Exception $e){
-
-                return '/images/default.jpg';
-            }
-            $source = $uploadfile;
-            $this->image_resize($source,$source,144,90,100);
-            //sleep(1);
-            //$this->data['cache_img'] = $dir . "/" . $file;
-            return $dir . "/" . $file;
-
-        }else{
-            return false;
-        }
-
-    }
-
-    private function item_check($item = array(), $rss = '', $link = '', $key = '')
-    {
-        $data = array();
-        $date = DateTime::createFromFormat('D, d M Y H:i:s P', trim($item->pubDate));
-        $date = $date->format('Y-m-d H:i:s');
-        $guid = isset($item->guid) ? $item->guid : $date;
-        $query = $this->db->query("SELECT `id` FROM `rss_item` WHERE `id_rss_parser` = '".$rss."' AND `guid` = '".$guid."'");
-        if($query->num_rows() > 0)
-        {
-            return false;
-        }
-        if( !isset($item->title) || empty($item->title) )
-        {
-            $data[] = array(
-                            'text'=> "Не найден заголовок новости № ".$item->guid,
-                            'link'=> "/rss/edit/".$rss,
-                            'date'=> date("Y-m-d H:i:s")
-                            );
-        }
-
-        if( !isset($item->link) || empty($item->link) )
-        {
-            $data[] = array(
-                'text'=> "Не найдена ссылка на новость № ".$item->guid,
-                'link'=> "/rss/edit/".$rss,
-                'date'=> date("Y-m-d H:i:s")
-            );
-        }
-        if( !isset($item->pubDate) || empty($item->pubDate) && $key ==1 ) {
-            $date = DateTime::createFromFormat('D, d M Y H:i:s P', trim($item->pubDate));
-            $date_1 = $date->format('Y-m-d');
-            $date_2 = date('Y-m-d');
-            $interval = $date_1->diff($date_2);
-            if( $interval->format('%a') >= 10)
-            {
-                $data[] = array(
-                    'text'=> "Лента " . $link . " не обновлялась " . $interval->format('%a') . " день.",
-                    'link'=> "/rss/edit/".$rss,
-                    'rang'=> "1",
-                    'date'=> date("Y-m-d H:i:s")
-                );
-            }
-        }
-        if(!empty($data))
-        {
-            $this->db->insert_batch('error_log', $data);
-
-        }
-        return true;
-    }
 
     public function add_news($data)
     {
@@ -586,7 +671,7 @@ WHERE `rss`.`update`>=`rss`.`period`');
 
         $img = $dir . "/" . $file;
 
-        $this->resize_img_rss( NULL ,$img);
+        $this->resize_img_rss( NULL ,$img);// !!!!!!!!!!!!!!!
         $data = array();
         foreach ($id_rss as $id) {
             $data[] = array(

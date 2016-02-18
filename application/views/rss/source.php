@@ -40,7 +40,6 @@
                             <th><i class=""></i> Ссылка на ленту</th>
                             <th><i class=""></i> Период обнволения</th>
                             <th><i class=""></i> Мобильная версия</th>
-                            <th><i class=""></i> Категория</th>
                             <th><i class=""></i> Ключевые слова</th>
                             <th><i class="icon_cogs"></i> Действие</th>
 
@@ -54,7 +53,7 @@
                                 <td><?=$item['tag']?></td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-success" href="/rss/edit_source"><i class="icon_cog"></i></a>
+                                        <a class="btn btn-success" href="/rss/edit_source/<?=$item['id']?>"><i class="icon_cog"></i></a>
                                         <a class="btn btn-danger" href="/rss/delete_source/<?=$item['id']?>"><i class="icon_trash_alt"></i></a>
                                     </div>
                                 </td>

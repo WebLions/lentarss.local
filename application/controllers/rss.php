@@ -142,10 +142,49 @@ class Rss extends CI_Controller
         }
     }
     //Редактирование источника
-    //Данные для редактирования
+    public function edit_source($id)
+    {
+        if($id==0||empty($id))
+            redirect('/404','refresh');
+        if($this->data['user_token']){
 
+            $this->form_validation->set_rules('title','Название','trim|required|xss_clean');
+            $this->form_validation->set_rules('link','Ссылка','trim|required|xss_clean');
+            $this->form_validation->set_rules('period','период','trim|required|xss_clean');
+            $this->data['error']['link'] = "";
 
+            if( $this->form_validation->run() == TRUE )
+            {
+                $result = $this->rss_model->edit_source($id,$this->input->post());
+                if($result){
+                    redirect('/rss/source_items','refresh');
+                }else{
+                    $this->data['error']['link'] = "Такая ссылка уже существует!";
+                }
+            }
+            $this->data = $this->rss_model->data_to_edit_source($id);
+            $this->load->view('user/header.php');
+            $this->load->view('rss/edit_source.php', $this->data);
+            $this->load->view('user/footer.php');
 
+        }
+    }
+    //Удаление источника
+    public function delete_source($id)
+    {
+        if($this->data['user_token'])
+        {
+            $this->rss_model->delete_source($id);
+            redirect('/rss/source_items','refresh');
+        }
+
+    }
+    //Конец блока источников
+
+    //Парсер
+    public function parser(){
+        $this->rss_model->parser();
+    }
 
 
 
@@ -183,10 +222,6 @@ class Rss extends CI_Controller
     }
 
 
-    public function parser(){
-
-        $this->rss_model->parser();
-    }
     public function source()
     {
         if( $this->data['user_token'] ){
@@ -235,16 +270,6 @@ class Rss extends CI_Controller
             $this->load->view('rss/special_rss.php', $this->data);
             $this->load->view('user/footer.php');
         }
-    }
-    //delete category
-    public function delete_source($id)
-    {
-        if($this->data['user_token'])
-        {
-            $this->rss_model->delete_source($id);
-            redirect('/rss','refresh');
-        }
-
     }
     public function delete_log()
     {
@@ -301,15 +326,7 @@ class Rss extends CI_Controller
             }
         }
     }
-    public function edit_source()
-    {
-        if($this->data['user_token'])
-        {
-            $this->load->view('user/header.php');
-            $this->load->view('rss/edit_source.php');
-            $this->load->view('user/footer.php');
-        }
-    }
+
     public function add_source_item()
     {
         if($this->data['user_token'])
