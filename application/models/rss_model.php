@@ -10,10 +10,9 @@ class Rss_model extends CI_Model
     }
     //Категории
     //Отображение списка категорий
-    public function get_category_list( $page )
+    public function get_category_list(  )
     {
-        $page = empty($page) ? 1 : $page;
-        $query = $this->db->get('category',10,($page-1)*10);
+        $query = $this->db->get('category');
         return $query->result_array();
     }
     //Добовление новой категории
@@ -144,8 +143,15 @@ class Rss_model extends CI_Model
 
     //Источники
     //Отображение списка источников
-    public function getSourceList()
+    public function getSourceList($page, $tag)
     {
+        if(!empty($tag)) {
+            $data = array(
+                'title' => $tag,
+                'tag' => $tag
+            );
+            $this->db->or_like($data);
+        }
         $query = $this->db->get('source');
         return $query->result_array();
     }
@@ -286,19 +292,17 @@ class Rss_model extends CI_Model
         set_time_limit(9800);
         //Обновили периоды источников
         $this->update_period_rss();
-
+        $text = '';
         $this->db->select('source.id as source, source.title as title, source.link as link');
         $this->db->where('source.update >=','source.period');
         $query = $this->db->get('source');
 
-        echo '<meta http-equiv="content-type" content="text/html; charset=UTF-8" />';
-
-        echo "Старт парсера. Найдено " . $query->num_rows() . " лент для обновления<br>";
+        $text.= "Старт парсера. Найдено " . $query->num_rows() . " лент для обновления<br>";
 
 
         foreach($query->result() as $row){
 
-            echo "Парсим {$row->link} <br>";
+            $text.= "Парсим {$row->link} <br>";
 
             $xml = @simplexml_load_file($row->link);
             if (!$xml) {
@@ -310,7 +314,7 @@ class Rss_model extends CI_Model
                     'date'=> date("Y-m-d H:i:s")
                 );
                 $this->db->insert('error_log', $data);
-                echo "Лента не работает<br>";
+                $text.= "Лента не работает<br>";
                 continue;
             }
 
@@ -352,23 +356,23 @@ class Rss_model extends CI_Model
                 if(!empty($data))
                 {
                     $this->db->insert_batch('item',$data);
-                    echo "Добавленно {$coll} новых новостей<br>";
+                    $text.= "Добавленно {$coll} новых новостей<br>";
                 }else{
-                    echo "Добавленно {$coll} новых новостей<br>";
+                    $text.= "Добавленно {$coll} новых новостей<br>";
                 }
             }
             $this->db->where('id',$row->source);
             $this->db->update('source', array('update'=>0));
 
         }
-        echo "Конец парсинга<br>";
-/*
+        $text.= "Конец парсинга<br>";
+
         $data = array(
             'text'=> $text,
             'link'=> "/rss/edit/",
             'date'=> date("Y-m-d H:i:s")
         );
-        $this->db->insert('error_log', $data);*/
+        $this->db->insert('error_log', $data);
 
         return true;
     }
@@ -377,9 +381,8 @@ class Rss_model extends CI_Model
 
         $this->db->query("UPDATE `source` SET `update` = `update` + 1");
 
-        //$this->db->query("UPDATE `special_item` SET `now` = `now` - 1 WHERE `now` > 0 ");
-
         $this->update_period_special();
+
         return true;
     }
     //Обновить периоды спец новостей
@@ -789,7 +792,6 @@ class Rss_model extends CI_Model
 
     public function get_source_list( $page , $tag )
     {
-        $page = empty($page) ? 1 : $page;
         if(!empty($tag)) {
             $data = array(
                 'title' => $tag,
@@ -801,18 +803,20 @@ class Rss_model extends CI_Model
         return $query->result_array();
     }
 
-
+    //Удаление старых новостей
     public function delete_old_news(){
+
         $this->db->select('id');
-        $query = $this->db->get("rss");
+        $query = $this->db->get("source");
+
         foreach( $query->result_array() as $row)
         {
-            $data = array();
             $this->db->select('id, img');
-            $this->db->where('id_rss', $row['id']);
+            $this->db->where('source_id', $row['id']);
             $this->db->where('special', 0);
             $this->db->order_by('date', 'DESC');
-            $query1 = $this->db->get("rss_item",400,200);
+            $query1 = $this->db->get("item",400,200);
+
             foreach( $query1->result_array() as $rows)
             {
                 if($rows['img']!='/images/default.jpg')
@@ -825,9 +829,8 @@ class Rss_model extends CI_Model
                         //continue;
                     }
                 }
-                $data = array('id' => $rows['id']);
                 $this->db->flush_cache();
-                $this->db->delete('rss_item',$data);
+                $this->db->delete('item', array('id' => $rows['id']));
             }
 
         }

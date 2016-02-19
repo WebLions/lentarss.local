@@ -121,7 +121,9 @@ class Rss extends CI_Controller
     {
         if($this->data['user_token'])
         {
-            $this->data['source'] = $this->rss_model->getSourceList();
+            $page = empty($_GET['page']) ? NULL : $_GET['page'];
+            $tag = empty($_GET['tag']) ? NULL : $_GET['tag'];
+            $this->data['source'] = $this->rss_model->getSourceList( $page, $tag );
             $this->load->view('user/header.php');
             $this->load->view('rss/source.php', $this->data);
             $this->load->view('user/footer.php');
@@ -291,11 +293,6 @@ class Rss extends CI_Controller
         }
     }
 
-
-    public function test()
-    {
-        $this->rss_model->update_period_special();
-    }
 
 
 
