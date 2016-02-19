@@ -19,9 +19,9 @@ class Ajax extends CI_Controller
         $this->data['mobile'] =  $_POST['mobile'];
         $this->load->view('ajax/check_rss', $this->data);
     }
+    //Получение списка категорий для спец.новости
     public function getRss()
     {
-
         $this->data['rss'] = $this->rss_model->getRss($_POST['id_rss']);
         $this->load->view('ajax/getRss', $this->data);
     }

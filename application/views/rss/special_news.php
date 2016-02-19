@@ -37,8 +37,8 @@
                                 <td><input type="checkbox" class="state" value="<?=$row['id_spec']?>" <?=($row['now']==0)? '' : 'checked' ?> /></td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-success" href="/rss/edit_special/<?=$row['id_spec']?>"><i class="icon_cog"></i></a>
-                                        <a class="btn btn-danger" href="/rss/delete_special/<?=$row['id_spec']?>"><i class="icon_trash_alt"></i></a>
+                                        <a class="btn btn-success" href="/rss/edit_special/<?=$row['id']?>"><i class="icon_cog"></i></a>
+                                        <a class="btn btn-danger" href="/rss/delete_special/<?=$row['id']?>"><i class="icon_trash_alt"></i></a>
                                     </div>
                                 </td>
                             </tr>
