@@ -17,13 +17,13 @@
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            <?php echo $rss[0]['title'];?>
+                            <?php echo $rss->title;?>
                         </header>
                         <div class="panel-body">
                             <div class="list-group">
-                                <?php foreach($rss_item as $row){?>
+                                <?php foreach($item as $row){?>
                                 <a class="list-group-item " href="<?php echo $row['link'].$row['mobile']?>" target="_blank">
-                                    <img src="<?php echo $row['img']?>" height="52" width="96"/>
+                                    <img src="http://<? echo $_SERVER['SERVER_NAME'] .  $row['img']?>" height="52" width="96"/>
                                     <h4 class="list-group-item-heading"><?php echo $row['title']?></h4>
                                     <p class="list-group-item-text"><?php echo $row['description']?></p>
                                 </a>

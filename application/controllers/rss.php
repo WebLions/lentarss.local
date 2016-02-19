@@ -101,6 +101,18 @@ class Rss extends CI_Controller
         }
 
     }
+    //Предпросмотри новой ленты
+    public function view( $id )
+    {
+        if($this->data['user_token'] && isset( $id ) ){
+            $this->data = $this->rss_model->view($id);
+            $this->load->view('user/header.php');
+            $this->load->view('rss/view.php', $this->data);
+            $this->load->view('user/footer.php');
+        }else{
+            redirect('404','refresh');
+        }
+    }
     //Конец блока категорий
 
     //Источники
@@ -186,39 +198,112 @@ class Rss extends CI_Controller
         $this->rss_model->parser();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
+    //Генерация новыъ лент
     public function generate($url)//генерация ленты рсс
     {
         $this->data = $this->rss_model->generate($url);
-        $this->load->view('category.php',$this->data);
+        $this->load->view('rss.php',$this->data);
     }
+
+    //Специальные новости
+    //Список спец новостей
+    public function special_news()
+    {
+        if($this->data['user_token'])
+        {
+            $this->data['news'] = $this->rss_model->get_list_spec();
+            $this->load->view('user/header.php');
+            $this->load->view('rss/special_news.php', $this->data);
+            $this->load->view('user/footer.php');
+        }
+    }
+    //Создание спец.новости
+    public function create_special_news()
+    {
+        $this->form_validation->set_rules('title','Название','trim|required|xss_clean');
+        $this->form_validation->set_rules('link','Ссылка','trim|required|xss_clean');
+        $this->form_validation->set_rules('description','Описание','trim|required|xss_clean');
+        $this->form_validation->set_rules('period','Период','trim|required|xss_clean');
+        $this->form_validation->set_rules('id_rss','Период','required|xss_clean');
+
+        if( $this->form_validation->run() == TRUE ) {
+            $result = $this->rss_model->add_news($this->input->post());
+            if ($result) {
+                redirect('/special_news', 'refresh');
+            } else {
+
+            }
+        }
+            $this->data['rss'] = $this->rss_model->get_list_rss();
+            $this->load->view('user/header.php');
+            $this->load->view('rss/special_rss.php', $this->data);
+            $this->load->view('user/footer.php');
+
+    }
+    //Редактировние спецюновости
+    public function edit_special($id)
+    {
+        if($this->data['user_token'])
+        {
+            $this->form_validation->set_rules('title','Название','trim|required|xss_clean');
+            if( $this->form_validation->run() == TRUE ) {
+                $result = $this->rss_model->edit_special($id, $this->input->post());
+                if ($result) {
+                    redirect('/special_news', 'refresh');
+                }
+            }
+                $this->data = $this->rss_model->special_to_edit($id);
+                $this->load->view('user/header.php');
+                $this->load->view('rss/edit_special.php', $this->data);
+                $this->load->view('user/footer.php');
+
+        }
+    }
+    //Удаление спец.новости
+    public function delete_special($id){
+        if($this->data['user_token'])
+        {
+            $this->rss_model->delete_special($id);
+            redirect('/special_news','refresh');
+        }
+    }
+
+
+    //Страница ошибок
+    public function errors()
+    {
+        if( $this->data['user_token'] ){
+            $this->data = $this->rss_model->errors();
+            $this->load->view('user/header.php');
+            $this->load->view('rss/errors.php', $this->data);
+            $this->load->view('user/footer.php');
+        }else{
+            redirect('404','refresh');
+        }
+    }
+    //Очистка ошибок
+    public function delete_log()
+    {
+        if($this->data['user_token'])
+        {
+            $this->rss_model->delete_log();
+            redirect('/errors','refresh');
+        }
+    }
+
+
+    public function test()
+    {
+        $this->rss_model->update_period_special();
+    }
+
+
+
 
 
     public function delete_old_news()
     {
         $this->rss_model->delete_old_news();
-    }
-    public function view( $id )
-    {
-        if($this->data['user_token'] && isset( $id ) ){
-            $this->data = $this->rss_model->view($id);
-            $this->load->view('user/header.php');
-            $this->load->view('rss/view.php', $this->data);
-            $this->load->view('user/footer.php');
-        }else{
-            redirect('404','refresh');
-        }
     }
 
 
@@ -234,51 +319,6 @@ class Rss extends CI_Controller
         }
     }
 
-    public function errors()
-    {
-        if( $this->data['user_token'] ){
-            $this->data = $this->rss_model->errors();
-            $this->load->view('user/header.php');
-            $this->load->view('rss/errors.php', $this->data);
-            $this->load->view('user/footer.php');
-        }else{
-            redirect('404','refresh');
-        }
-    }
-
-    public function create_special_news()
-    {
-        $this->form_validation->set_rules('title','Название','trim|required|xss_clean');
-        $this->form_validation->set_rules('link','Ссылка','trim|required|xss_clean');
-        $this->form_validation->set_rules('description','Описание','trim|required|xss_clean');
-        $this->form_validation->set_rules('period','Период','trim|required|xss_clean');
-        $this->form_validation->set_rules('id_rss','Период','required|xss_clean');
-       // $this->form_validation->set_rules('picture','Картинка','trim|required|xss_clean');
-
-
-        if( $this->form_validation->run() == TRUE )
-        {
-            $result = $this->rss_model->add_news( $this->input->post() );
-            if($result){
-                redirect('/special_news','refresh');
-            }else{
-                redirect('/special_rss','refresh');
-            }
-        }else {
-            $this->data['rss'] = $this->rss_model->get_list_rss();
-            $this->load->view('user/header.php');
-            $this->load->view('rss/special_rss.php', $this->data);
-            $this->load->view('user/footer.php');
-        }
-    }
-    public function delete_log()
-    {
-        if($this->data['user_token'])
-        {
-            $this->rss_model->delete_log();
-            redirect('/errors','refresh');
-        }
-    }
     public function check()
     {
         if($this->data['user_token'])
@@ -288,44 +328,7 @@ class Rss extends CI_Controller
             $this->load->view('user/footer.php');
         }
     }
-    public function special_news()
-    {
-        if($this->data['user_token'])
-        {
-            $this->data['news'] = $this->rss_model->get_list_spec();
-            $this->load->view('user/header.php');
-            $this->load->view('rss/special_news.php', $this->data);
-            $this->load->view('user/footer.php');
-        }
-    }
-    public function delete_special($id){
-        if($this->data['user_token'])
-        {
-            $this->rss_model->delete_special($id);
-            redirect('/special_news','refresh');
-        }
-    }
-    public function edit_special($id)
-    {
-        if($this->data['user_token'])
-        {
-            $this->form_validation->set_rules('title','Название','trim|required|xss_clean');
-            if( $this->form_validation->run() == TRUE )
-            {
-                $result = $this->rss_model->edit_special($id, $this->input->post());
-                if($result){
-                    redirect('/special_news','refresh');
-                }else{
-                    redirect('/rss/edit_special/'.$id ,'refresh');
-                }
-            }else {
-                $this->data['news'] = $this->rss_model->special_to_edit($id);
-                $this->load->view('user/header.php');
-                $this->load->view('rss/edit_special.php', $this->data);
-                $this->load->view('user/footer.php');
-            }
-        }
-    }
+
 
     public function add_source_item()
     {

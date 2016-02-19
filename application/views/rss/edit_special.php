@@ -24,33 +24,33 @@
                             <form role="form" id="create_rss" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="title">Название новости</label>
-                                    <input type="text" value="<?php echo $news[0]['title']?>" name="title" class="form-control" id="title" placeholder="Заголовок новости">
+                                    <input type="text" value="<?php echo $item->title?>" name="title" class="form-control" id="title" placeholder="Заголовок новости">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Ссылка</label>
-                                    <input type="text" value="<?php echo $news[0]['link']?>" name="link" class="form-control" id="link" placeholder="Ссылка на новость">
+                                    <input type="text" value="<?php echo $item->link?>" name="link" class="form-control" id="link" placeholder="Ссылка на новость">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Краткое описание</label>
-                                    <input type="text" value="<?php echo $news[0]['description']?>" name="description" class="form-control" id="description" placeholder="Описание">
+                                    <input type="text" value="<?php echo $item->description?>" name="description" class="form-control" id="description" placeholder="Описание">
                                 </div>
                                 <div class="form-group">
                                     <label for="datetime">Дата и время размещения</label>
-                                    <input type="text" value="<?php echo $news[0]['date']?>" name="datetime" class="form-control" id="datetimepicker" placeholder="">
+                                    <input type="text" value="<?php echo $item->date?>" name="datetime" class="form-control" id="datetimepicker" placeholder="">
                                 </div>
                                 <div class="form-group">
                                     <label for="period">Период</label>
-                                    <input type="text" value="<?php echo $news[0]['period']?>" name="period" class="form-control" id="period" placeholder="В часах">
+                                    <input type="text" value="<?php echo $item->period?>" name="period" class="form-control" id="period" placeholder="В часах">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="update">Время закрепления</label>
-                                    <input type="text"  value="<?php echo $news[0]['update']?>" name="update" class="form-control" id="update" placeholder="В минутах">
+                                    <input type="text"  value="<?php echo $item->update?>" name="update" class="form-control" id="update" placeholder="В минутах">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="description">Изображение</label>
-                                    <img src="<?php echo $news[0]['img']?>" />
+                                    <img src="<?php echo $item->img?>" />
                                     <input type="file" name="picture" multiple accept="image/*,image/jpeg">
                                 </div>
 
@@ -58,11 +58,11 @@
                                     <label for="id_rss">Лента для спец новости</label>
 
                                     <table id="donors_spec" width = "100%">
-                                        <? foreach ($news as $new) {?>
+                                        <? foreach ($category as $cat) {?>
                                             <tr>
                                                 <td>
                                                     <select name="id_rss[]" class="form-control m-bot15">
-                                                        <option value="<?=$new['id_rss']?>"><?=$new['title']?></option>
+                                                        <option value="<?=$cat['id']?>"><?=$cat['title']?></option>
                                                     </select>
                                                 </td>
                                                 <td>
